@@ -1,1 +1,8 @@
 .env/
+condocalc/scrapy.cfg
+condocalc/condocalc/spiders/__init__.py
+condocalc/condocalc/settings.py
+condocalc/condocalc/pipelines.py
+condocalc/condocalc/middlewares.py
+condocalc/condocalc/items.py
+condocalc/condocalc/__init__.py
