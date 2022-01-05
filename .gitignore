@@ -6,3 +6,6 @@ condocalc/condocalc/pipelines.py
 condocalc/condocalc/middlewares.py
 condocalc/condocalc/items.py
 condocalc/condocalc/__init__.py
+.idea/
+items.json
+__pycache__

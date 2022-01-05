@@ -1,4 +1,6 @@
 import scrapy
+from scrapy_splash import SplashRequest
+from scrapy.crawler import CrawlerProcess
 import pandas as pd
 
 
@@ -26,21 +28,39 @@ def log_data():
     return login
 
 
-class PostsSpider(scrapy.Spider):
-    name = 'posts'
-    logmein = log_data()
+class Calculator(scrapy.Spider):
+    name = 'calc'
 
-    start_urls = [
-        logmein['generali_url'],
-        logmein['uniqa_url'],
-        logmein['warta_url']
-    ]
+    def start_requests(self):
+        logmein = log_data()
+        url = logmein['uniqa_url']
+        # yield SplashRequest(url=url, callback=self.parse)
+        yield scrapy.Request(url)
 
 
     def parse(self, response):
-        page = response.url
-        return page
+        r = response.css('div').getall()
+        print(r)
 
-gen_spider = PostsSpider
+        # for item in r.getall():
+    #
+    #         # id =username
+    #         # id =password
 
-print(gen_spider.start_urls)
+        yield r
+
+
+
+
+process = CrawlerProcess(settings={
+    "FEEDS": {
+        "items.json": {"format": "json"},
+    },
+})
+
+process.crawl(Calculator)
+process.start()
+
+
+
+
