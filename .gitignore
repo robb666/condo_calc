@@ -9,3 +9,5 @@ condocalc/condocalc/__init__.py
 .idea/
 items.json
 __pycache__
+tutorial/
+condocalc/condocalc/spiders/calc.py
