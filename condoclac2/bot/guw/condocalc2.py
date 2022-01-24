@@ -1,21 +1,11 @@
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 import pandas as pd
+import guw.constants as const
 
 
 class Condocalc(webdriver.Chrome):
-    login = {}
-    df = pd.read_excel('/run/user/1000/gvfs/smb-share:server=192.168.1.12,share=e/Agent baza/Login_Hasło.xlsx')
-
-    login['generali_url'] = 'https://' + df.iloc[8, 3]
-    login['generali_login'] = df.iloc[8, 5]
-    login['generali_password'] = df.iloc[8, 6]
-    login['uniqa_url'] = 'https://' + df.iloc[40, 3]
-    login['uniqa_login'] = df.iloc[41, 5]
-    login['uniqa_password'] = df.iloc[40, 6]
-    login['warta_url'] = 'https://' + df.iloc[42, 3]
-    login['warta_login'] = df.iloc[42, 5]
-    login['warta_password'] = df.iloc[42, 6]
-    print(login)
 
     def __init__(self, driver_path=webdriver.Chrome, teardown=False):
         self.driver_path = driver_path
@@ -27,5 +17,9 @@ class Condocalc(webdriver.Chrome):
             self.quit()
 
     def land_first_page(self):
-        self.get(self.login['uniqa_url'])
+        self.get(const.login['generali_url'])
+
+    def login(self):
+        self.find_element(By.XPATH, "//input[@id='username']").send_keys(const.login['generali_login'])
+        self.find_element(By.XPATH, "//input[@id='password']").send_keys(const.login['generali_password'])
 
