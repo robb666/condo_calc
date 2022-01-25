@@ -12,7 +12,7 @@ class Condocalc(webdriver.Chrome):
         self.driver_path = driver_path
         self.teardown = teardown
         options = webdriver.ChromeOptions()
-        # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools
+        # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
         # options.add_argument('--headless')
         super(Condocalc, self).__init__(options=options)
         self.implicitly_wait(10)
