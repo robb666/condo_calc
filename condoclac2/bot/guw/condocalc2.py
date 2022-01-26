@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.relative_locator import locate_with
 import pandas as pd
 import time
 
@@ -15,7 +16,7 @@ class Condocalc(webdriver.Chrome):
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
         # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
-        # options.add_argument('--headless')
+        # options.headless = True
         super(Condocalc, self).__init__(options=options)
         self.implicitly_wait(10)
 
@@ -23,7 +24,7 @@ class Condocalc(webdriver.Chrome):
         if self.teardown:
             self.quit()
 
-    def land_first_page(self, url):
+    def login_page(self, url):
         self.get(url)
 
     def login(self, login, passw):
@@ -34,25 +35,13 @@ class Condocalc(webdriver.Chrome):
     def calc(self):
         self.find_element(By.XPATH, "//label[contains(text(), 'Dom')]").click()
 
-    def apk(self):
+    def apk_gen(self):
         self.find_element(By.XPATH, "//*[@class='col-sm-3']//span[text()='TAK']").click()
-        apk_text = self.find_element(By.XPATH, "//span[text()='2.']/following::span[1]")
-        print('\n' + apk_text.text)
-
-        decision = input('\nNaciśnij "t" jeżeli TAK, "n" jeżeli NIE i enter: ')
-        if decision == 't':
-            self.find_element(By.XPATH, "//*[@class='col-sm-3']/following::span[text()='TAK']").click()
-        elif decision == 'n':
-            self.find_element(By.XPATH, "//*[@class='col-sm-3']/following::span[text()='NIE']").click()
-        else:
-            self.apk()
-
-
-        # for question in apk_text:
-        #     print(question.text)
-        #     if question.text.startswith('2'):
-        #         print(question.text)
+        self.find_element(By.XPATH, "//*[@class='col-sm-3']/following::span[text()='NIE']").click()
+        self.find_element(By.XPATH, "//*[@id='apkSection']/div[2]/div/div[1]/div[5]/div[2]/div/label[2]/span").click()
+        self.find_element(By.XPATH,
+                          "//span[@class='fe-loading-btn-next fe-readonlymode-active fe-no-policy-disable-send']"
+                          ).click()
         time.sleep(9999)
-        return apk_text
-        # self.find_element(By.XPATH, "//span[@class='fe-radio-btn-label']").click()
+
 
