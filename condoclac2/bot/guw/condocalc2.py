@@ -31,9 +31,19 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//input[@id='username' or @id='login']").send_keys(login)
         self.find_element(By.XPATH, "//input[@id='password']").send_keys(passw)
         self.find_element(By.XPATH, "//*[@type='submit' or @type='button']").click()
+        # time.sleep(9999)
 
-    def calc(self):
+    def calc_gen(self):
         self.find_element(By.XPATH, "//label[contains(text(), 'Dom')]").click()
+
+    def calc_war(self):
+        self.find_element(By.XPATH, "//span[text()='Majątek']").click()
+        self.find_element(By.XPATH, "//a[contains(text(), 'Sprzedaż')]").click()
+        self.find_element(By.XPATH, "//span[text()='Mieszkaniowe']").click()
+
+    def calc_wie(self, url):
+        time.sleep(.2)
+        self.get(url)
 
     def apk_gen(self):
         self.find_element(By.XPATH, "//*[@class='col-sm-3']//span[text()='TAK']").click()
@@ -42,6 +52,10 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH,
                           "//span[@class='fe-loading-btn-next fe-readonlymode-active fe-no-policy-disable-send']"
                           ).click()
-        time.sleep(9999)
 
+    def apk_war(self):
+        self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
+
+    def wait(self):
+        time.sleep(9999)
 

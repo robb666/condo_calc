@@ -3,6 +3,7 @@ import pandas as pd
 
 PATH = '/run/user/1000/gvfs/smb-share:server=192.168.1.12,share=e/Agent baza/Login_Hasło.xlsx'
 
+
 login = {}
 df = pd.read_excel(PATH)
 login['generali_url'] = 'https://' + df.iloc[8, 3]
@@ -16,3 +17,6 @@ login['warta_password'] = df.iloc[42, 6]
 login['wiener_url'] = 'https://' + df.iloc[52, 3]
 login['wiener_login'] = df.iloc[52, 5]
 login['wiener_password'] = df.iloc[52, 6]
+
+
+WIE_CALC = 'https://wienet.pl/#/household?calculatorRoute=household'
