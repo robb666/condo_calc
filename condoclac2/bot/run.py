@@ -1,5 +1,6 @@
-from guw.condocalc2 import Condocalc
-import guw.constants as const
+from gww.condocalc2 import Condocalc
+import gww.constants as const
+from gww.variables import customer_data
 import concurrent.futures
 
 

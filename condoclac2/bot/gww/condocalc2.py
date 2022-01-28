@@ -56,6 +56,8 @@ class Condocalc(webdriver.Chrome):
     def apk_war(self):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
+    def input(self):pass
+
     def wait(self):
         time.sleep(9999)
 
