@@ -3,13 +3,16 @@ import re
 
 datapath = '/home/robb/Desktop/customer_form.txt'
 
+d = {}
 with open(datapath, 'r') as file:
-    dicti = re.split(' |\n+', file.read())
-    print(dicti)
-    di = {dicti[num].rstrip(':'): dicti[num + 1] for num in range(len(dicti))
-          if ':' in dicti[num] and ':' not in dicti[num + 1]}
+    string = file.read().replace(' ', '')
+    clean_str = re.sub('\n+', '\n', string)
+    arr = re.split('\n', clean_str)
+    for item in arr:
+        colon_splited = item.split(':')
+        if colon_splited[0] != '':
+            d[colon_splited[0]] = colon_splited[1]
 
-
-pprint(di)
+pprint(d)
 
 
