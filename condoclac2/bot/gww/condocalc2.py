@@ -18,7 +18,7 @@ class Condocalc(webdriver.Chrome):
         # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
-        self.implicitly_wait(1000)
+        self.implicitly_wait(10)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -60,8 +60,11 @@ class Condocalc(webdriver.Chrome):
         print(customer)
         for item in data:
             print(item)
-            box = self.find_element(By.XPATH, f"//label[contains(text(), '{item}')]/following::input")
-            box.send_keys(data[item])
+            try:
+                box = self.find_element(By.XPATH, f"//label[contains(text(), '{item}')]/following::input")
+                box.send_keys(data[item])
+            except:
+                pass
 
 
 
