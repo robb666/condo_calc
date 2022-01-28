@@ -9,8 +9,11 @@ def customer_data(path):
         clean_str = re.sub('\n+', '\n', string)
         arr = re.split('\n', clean_str)
         for item in arr:
-            colon_splited = item.split(':')
-            if colon_splited[0] != '':
-                file_dict[colon_splited[0]] = colon_splited[1]
+            colon_splitted = item.split(':')
+            if colon_splitted[0] != '':
+                file_dict[colon_splitted[0]] = colon_splitted[1]
     pprint(file_dict)
     return file_dict
+
+
+

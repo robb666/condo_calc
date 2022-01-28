@@ -20,4 +20,5 @@ login['wiener_password'] = df.iloc[52, 6]
 
 
 WIE_CALC = 'https://wienet.pl/#/household?calculatorRoute=household'
+
 DATA_PATH = '/home/robb/Desktop/customer_form.txt'

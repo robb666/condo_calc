@@ -18,7 +18,7 @@ class Condocalc(webdriver.Chrome):
         # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
-        self.implicitly_wait(10)
+        self.implicitly_wait(1000)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -31,7 +31,6 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//input[@id='username' or @id='login']").send_keys(login)
         self.find_element(By.XPATH, "//input[@id='password']").send_keys(passw)
         self.find_element(By.XPATH, "//*[@type='submit' or @type='button']").click()
-        # time.sleep(9999)
 
     def calc_gen(self):
         self.find_element(By.XPATH, "//label[contains(text(), 'Dom')]").click()
@@ -56,7 +55,21 @@ class Condocalc(webdriver.Chrome):
     def apk_war(self):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
-    def input(self):pass
+    def input(self, data):
+        customer = self.find_element(By.ID, 'houseCalculationDataForm').text.split('\n')
+        print(customer)
+        for item in data:
+            print(item)
+            box = self.find_element(By.XPATH, f"//label[contains(text(), '{item}')]/following::input")
+            box.send_keys(data[item])
+
+
+
+        # "//label[text()='Imię']/following::input"
+        #
+        #
+        # 'insured-first-name-0'  # Warta
+
 
     def wait(self):
         time.sleep(9999)
