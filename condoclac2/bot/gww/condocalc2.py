@@ -62,7 +62,7 @@ class Condocalc(webdriver.Chrome):
         box.send_keys(Keys.DELETE)
 
     def input_gen(self, data):
-        data['domu'], data['lokalu'] = data.pop('Nr.ulicy'), data.pop('Nr.mieszkania')
+        data['domu'], data['lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
         customer = self.find_element(By.ID, 'houseCalculationDataForm').text
         for key in data:
             if item := re.search(key, customer, re.I):
@@ -82,18 +82,17 @@ class Condocalc(webdriver.Chrome):
         if data['Konstrukcja'] == 'Drewniana':
             self.find_element(By.XPATH, "//div[contains(text(), 'Drewniana')]").click()
 
-
-        if data['Zabezpieczenia'].title() == 'Domofon':  # Zrobić listę i przeiterować
+        if data['Zabezpieczenia'][0] != '':
             self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
-            self.find_element(By.XPATH, "//span[text()='Domofon']").click()
-
+            for security in data['Zabezpieczenia']:
+                self.find_element(By.XPATH, f"//span[text()='{security.capitalize()}']").click()
 
         self.find_element(By.CSS_SELECTOR, '#last5YearsClaims > label:nth-child(1)').click()
         for i in range(2, 7, 2):
             self.find_element(By.CSS_SELECTOR,
                               f'#agreementPanel > div:nth-child({i}) > div > div > label:nth-child(2)').click()
 
-        # self.find_element(By.XPATH, "//span[text()='Dalej']").click()
+        self.find_element(By.XPATH, "//span[text()='Dalej']").click()
 
     def wait(self):
         time.sleep(9999)
