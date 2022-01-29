@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
@@ -109,6 +110,26 @@ class Condocalc(webdriver.Chrome):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
                 box.send_keys(data[key])
+
+    def input_wie(self, data):
+        time.sleep(.5)
+        # period = self.find_element(By.XPATH, "//input[@ref='input']")
+        period = WebDriverWait(self, 3).until(EC.presence_of_element_located((By.XPATH, "//input[@ref='input']")))
+
+        period.click()
+        period.send_keys(Keys.ENTER)
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        self.find_element(By.XPATH, "//span[text()='Mieszkanie']").click()
+        form = self.find_element(By.XPATH,
+                                 "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']"
+                                 ).text
+        print(form)
+        for key in data:
+            if item := re.search(key, form, re.I):
+                re_key = item.group()
+                box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
+                box.send_keys(data[key])
+
 
     def wait(self):
         time.sleep(9999)
