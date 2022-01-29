@@ -58,6 +58,8 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
     def _clear_box(self, box):
+        if box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']"):
+            self.find_element(By.XPATH, f"//div[@id='propertyPanel']").click()
         box.send_keys(Keys.CONTROL + 'a')
         box.send_keys(Keys.DELETE)
 
@@ -83,10 +85,13 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//div[contains(text(), 'Drewniana')]").click()
         if data['Zabezpieczenia'][0] != '':
             self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
+            self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
             for security in data['Zabezpieczenia']:
                 self.find_element(By.XPATH, f"//span[text()='{security.capitalize()}']").click()
 
-        self.find_element(By.CSS_SELECTOR, '#last5YearsClaims > label:nth-child(1)').click()
+        data['Liczba szkód'] = 3 if int(data['Liczba szkód']) > 3 else int(data['Liczba szkód'])
+        self.find_element(By.CSS_SELECTOR,
+                          f"#last5YearsClaims > label:nth-child({int(data['Liczba szkód']) + 1})").click()
 
         for i in range(2, 7, 2):
             self.find_element(By.CSS_SELECTOR,
