@@ -62,6 +62,7 @@ class Condocalc(webdriver.Chrome):
         box.send_keys(Keys.DELETE)
 
     def input_gen(self, data):
+        data['domu'], data['lokalu'] = data.pop('Nr.ulicy'), data.pop('Nr.mieszkania')
         customer = self.find_element(By.ID, 'houseCalculationDataForm').text
         for key in data:
             if item := re.search(key, customer, re.I):
@@ -75,7 +76,11 @@ class Condocalc(webdriver.Chrome):
         flat = self.find_element(By.XPATH, "//input[@id='flatNumber-propertyForm']")
         self._clear_box(flat)
         flat.send_keys(data['domu'])
-
+        self.find_element(By.CSS_SELECTOR, '#last5YearsClaims > label:nth-child(1)').click()
+        for i in range(2, 7, 2):
+            self.find_element(By.CSS_SELECTOR,
+                              f'#agreementPanel > div:nth-child({i}) > div > div > label:nth-child(2)').click()
+        self.find_element(By.XPATH, "//span[text()='Dalej']").click()
 
     def wait(self):
         time.sleep(9999)
