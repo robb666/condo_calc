@@ -5,6 +5,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.relative_locator import locate_with
 import pandas as pd
 import time
+import re
 
 
 class Condocalc(webdriver.Chrome):
@@ -56,15 +57,13 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
     def input(self, data):
-        customer = self.find_element(By.ID, 'houseCalculationDataForm').text.split('\n')
-        print(customer)
-        for item in data:
-            print(item)
-            try:
-                box = self.find_element(By.XPATH, f"//label[contains(text(), '{item}')]/following::input")
-                box.send_keys(data[item])
-            except:
-                pass
+        customer = self.find_element(By.ID, 'houseCalculationDataForm').text
+        for key in data:
+            if item := re.search(key, customer, re.I):
+                re_key = item.group()
+                box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
+                box.send_keys(data[key])
+
 
 
 
