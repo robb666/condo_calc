@@ -76,11 +76,24 @@ class Condocalc(webdriver.Chrome):
         flat = self.find_element(By.XPATH, "//input[@id='flatNumber-propertyForm']")
         self._clear_box(flat)
         flat.send_keys(data['domu'])
+
+        if data['Rodzaj'] == 'Dom':
+            self.find_element(By.XPATH, "//div[contains(text(), 'Dom')]").click()
+        if data['Konstrukcja'] == 'Drewniana':
+            self.find_element(By.XPATH, "//div[contains(text(), 'Drewniana')]").click()
+
+
+        if data['Zabezpieczenia'].title() == 'Domofon':  # Zrobić listę i przeiterować
+            self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
+            self.find_element(By.XPATH, "//span[text()='Domofon']").click()
+
+
         self.find_element(By.CSS_SELECTOR, '#last5YearsClaims > label:nth-child(1)').click()
         for i in range(2, 7, 2):
             self.find_element(By.CSS_SELECTOR,
                               f'#agreementPanel > div:nth-child({i}) > div > div > label:nth-child(2)').click()
-        self.find_element(By.XPATH, "//span[text()='Dalej']").click()
+
+        # self.find_element(By.XPATH, "//span[text()='Dalej']").click()
 
     def wait(self):
         time.sleep(9999)
