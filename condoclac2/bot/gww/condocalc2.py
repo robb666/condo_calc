@@ -65,9 +65,9 @@ class Condocalc(webdriver.Chrome):
 
     def input_gen(self, data):
         data['domu'], data['lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
-        customer = self.find_element(By.ID, 'houseCalculationDataForm').text
+        form = self.find_element(By.ID, 'houseCalculationDataForm').text
         for key in data:
-            if item := re.search(key, customer, re.I):
+            if item := re.search(key, form, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 self._clear_box(box)
@@ -98,6 +98,17 @@ class Condocalc(webdriver.Chrome):
                               f'#agreementPanel > div:nth-child({i}) > div > div > label:nth-child(2)').click()
 
         self.find_element(By.XPATH, "//span[text()='Dalej']").click()
+
+    def input_war(self, data):
+        form = self.find_elements(By.XPATH, "//div[@class='col-md-12']")
+        print(form)
+        for text in form:
+            print(text.text)
+        for key in data:
+            if item := re.search(key, form, re.I):
+                re_key = item.group()
+                box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
+                box.send_keys(data[key])
 
     def wait(self):
         time.sleep(9999)
