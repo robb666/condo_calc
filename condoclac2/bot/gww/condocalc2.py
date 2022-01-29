@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.relative_locator import locate_with
 import pandas as pd
@@ -62,15 +63,13 @@ class Condocalc(webdriver.Chrome):
             if item := re.search(key, customer, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
+                box.send_keys(Keys.CONTROL + "a")
+                box.send_keys(Keys.DELETE)
                 box.send_keys(data[key])
 
 
 
-
-        # "//label[text()='Imię']/following::input"
-        #
-        #
-        # 'insured-first-name-0'  # Warta
+        # 'insured-first-name-0'  # War
 
 
     def wait(self):
