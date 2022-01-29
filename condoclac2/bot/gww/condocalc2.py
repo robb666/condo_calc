@@ -57,19 +57,24 @@ class Condocalc(webdriver.Chrome):
     def apk_war(self):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
-    def input(self, data):
+    def _clear_box(self, box):
+        box.send_keys(Keys.CONTROL + 'a')
+        box.send_keys(Keys.DELETE)
+
+    def input_gen(self, data):
         customer = self.find_element(By.ID, 'houseCalculationDataForm').text
         for key in data:
             if item := re.search(key, customer, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
-                box.send_keys(Keys.CONTROL + "a")
-                box.send_keys(Keys.DELETE)
+                self._clear_box(box)
                 box.send_keys(data[key])
-
-
-
-        # 'insured-first-name-0'  # War
+        house = self.find_element(By.XPATH, "//input[@id='houseNumber-propertyForm']")
+        self._clear_box(house)
+        house.send_keys(data['lokalu'])
+        flat = self.find_element(By.XPATH, "//input[@id='flatNumber-propertyForm']")
+        self._clear_box(flat)
+        flat.send_keys(data['domu'])
 
 
     def wait(self):

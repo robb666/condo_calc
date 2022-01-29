@@ -14,7 +14,7 @@ def gen():
                   const.login['generali_password'])
         bot.calc_gen()
         bot.apk_gen()
-        bot.input(data)
+        bot.input_gen(data)
 
         bot.wait()
 
