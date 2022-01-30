@@ -4,7 +4,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.relative_locator import locate_with
+from selenium.webdriver.common.action_chains import ActionChains
+# from selenium.webdriver.support.relative_locator import locate_with
 import pandas as pd
 import time
 import re
@@ -119,7 +120,8 @@ class Condocalc(webdriver.Chrome):
         if data['Rodzaj'].title() == 'Mieszkanie':
             self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
 
-        form = self.find_elements(By.XPATH, "//div[@class='col-md-12']")
+        # form = self.find_elements(By.XPATH, "//div[@class='col-md-12']")
+        form = WebDriverWait(self, 9).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-md-12']")))
         form_text = ''.join([item.text for item in form])
         print(form_text)
 
@@ -134,8 +136,15 @@ class Condocalc(webdriver.Chrome):
                 box.send_keys(data[key])
 
 
-
-
+        # form = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
+        #
+        # pesel = ActionChains(driver)
+        # pesel.move_to_element(elem)
+        # pesel.click(elem)  # select the element where to paste text
+        # pesel.key_down(Keys.META)
+        # pesel.send_keys(pesel_regon)
+        # pesel.key_up(Keys.META)
+        # pesel.perform()
 
 
 
