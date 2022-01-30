@@ -59,7 +59,8 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
     def _clear_box(self, box):
-        if box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']"):
+        if box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']|"  # gen
+                                              f"//h3[text()='Miejsce ubezpieczenia']"):  # wie
             self.find_element(By.XPATH, f"//div[@id='propertyPanel']").click()
         box.send_keys(Keys.CONTROL + 'a')
         box.send_keys(Keys.DELETE)
@@ -75,10 +76,10 @@ class Condocalc(webdriver.Chrome):
                 box.send_keys(data[key])
         house = self.find_element(By.XPATH, "//input[@id='houseNumber-propertyForm']")
         self._clear_box(house)
-        house.send_keys(data['lokalu'])
+        house.send_keys(data['domu'])
         flat = self.find_element(By.XPATH, "//input[@id='flatNumber-propertyForm']")
         self._clear_box(flat)
-        flat.send_keys(data['domu'])
+        flat.send_keys(data['lokalu'])
 
         if data['Rodzaj'].title() == 'Dom':
             self.find_element(By.XPATH, "//div[contains(text(), 'Dom')]").click()
@@ -112,10 +113,12 @@ class Condocalc(webdriver.Chrome):
                 box.send_keys(data[key])
 
     def input_wie(self, data):
-        time.sleep(.5)
-        # period = self.find_element(By.XPATH, "//input[@ref='input']")
-        period = WebDriverWait(self, 3).until(EC.presence_of_element_located((By.XPATH, "//input[@ref='input']")))
-
+        """Pierwsze linijki redefiniują słownik."""
+        # TODO dorobić kontygnację
+        data['Numer budynku'], data['Numer mieszkania'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+        time.sleep(.4)
+        period = self.find_element(By.XPATH, "//input[@ref='input']")
+        # period = WebDriverWait(self, 3).until(EC.presence_of_element_located((By.XPATH, "//input[@ref='input']"))) ???
         period.click()
         period.send_keys(Keys.ENTER)
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -128,9 +131,17 @@ class Condocalc(webdriver.Chrome):
             if item := re.search(key, form, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
+                self._clear_box(box)
                 box.send_keys(data[key])
+        time.sleep(4)
+        self.find_element(By.XPATH, "//property-data/div/div[2]/div[2]/div/div/radio-btn-in[2]/label").click()
+        # self.find_element(By.XPATH, "//input[@name='id_v21a1aryw']").click()
+
+
+
 
 
     def wait(self):
+        print('time.sleep(9999)')
         time.sleep(9999)
 
