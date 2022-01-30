@@ -113,6 +113,8 @@ class Condocalc(webdriver.Chrome):
 
 
     def input_war(self, data):
+        data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         # time.sleep(5)
         if data['Rodzaj'].title() == 'Dom':
@@ -156,6 +158,9 @@ class Condocalc(webdriver.Chrome):
 
 
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
+        self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
+        time.sleep(4)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr lokalu'])
 
 
         # elem = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
