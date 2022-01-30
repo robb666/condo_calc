@@ -135,9 +135,15 @@ class Condocalc(webdriver.Chrome):
                 box.send_keys(data[key])
 
         self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
-        self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
+        if data['Kondygnacja'].title() == 'Parter':
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[1].click()
+        if data['Kondygnacja'].title() == 'Środkowa':
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
+        if data['Kondygnacja'].title() == 'Ostatnie':
+            self.find_element(By.XPATH, "//property-data/*//radio-btn-in[3]/label").click()
 
-
+        self.find_element(By.XPATH, "//*[@id='uniqueId_4']").send_keys('30')
+        self.find_element(By.XPATH, "//button[text()='Następny krok']").click()
 
 
 
