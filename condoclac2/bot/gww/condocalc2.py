@@ -114,7 +114,7 @@ class Condocalc(webdriver.Chrome):
 
     def input_war(self, data):
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(5)
+        # time.sleep(5)
         if data['Rodzaj'].title() == 'Dom':
             self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
         if data['Rodzaj'].title() == 'Mieszkanie':
@@ -125,18 +125,40 @@ class Condocalc(webdriver.Chrome):
         form_text = ''.join([item.text for item in form])
         print(form_text)
 
+        # for key in data:
+        #     if item := re.search(key, form_text, re.I):
+        #         re_key = item.group()
+        #         print(re_key)
+        #         if re_key in ('Kod TRAVEL'):
+        #             continue
+        #         box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
+        #         time.sleep(3)
+        #         box.send_keys(data[key])
+
         for key in data:
             if item := re.search(key, form_text, re.I):
                 re_key = item.group()
                 print(re_key)
                 if re_key in ('Kod TRAVEL'):
                     continue
-                box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
-                time.sleep(3)
-                box.send_keys(data[key])
+                box = WebDriverWait(self, 9).until(
+                    EC.presence_of_element_located((
+                        By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")))
+
+                action_box = ActionChains(self)
+                action_box.move_to_element(box)
+                action_box.click(box)
+                action_box.key_down(Keys.META)
+                action_box.send_keys(data[key])
+                action_box.key_up(Keys.META)
+                time.sleep(2)
+                action_box.perform()
 
 
-        # form = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
+        self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
+
+
+        # elem = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
         #
         # pesel = ActionChains(driver)
         # pesel.move_to_element(elem)
