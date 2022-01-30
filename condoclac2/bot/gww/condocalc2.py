@@ -101,16 +101,46 @@ class Condocalc(webdriver.Chrome):
 
         self.find_element(By.XPATH, "//span[text()='Dalej']").click()
 
+
+
+
+
+
+
+
+
+
+
     def input_war(self, data):
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(5)
+        if data['Rodzaj'].title() == 'Dom':
+            self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
+        if data['Rodzaj'].title() == 'Mieszkanie':
+            self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
+
         form = self.find_elements(By.XPATH, "//div[@class='col-md-12']")
-        print(form)
-        for text in form:
-            print(text.text)
+        form_text = ''.join([item.text for item in form])
+        print(form_text)
+
         for key in data:
-            if item := re.search(key, form, re.I):
+            if item := re.search(key, form_text, re.I):
                 re_key = item.group()
+                print(re_key)
+                if re_key in ('Kod TRAVEL'):
+                    continue
                 box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
+                time.sleep(3)
                 box.send_keys(data[key])
+
+
+
+
+
+
+
+
+
 
     def input_wie(self, data):
         """Pierwsze linijki redefiniują słownik."""
@@ -126,7 +156,7 @@ class Condocalc(webdriver.Chrome):
         form = self.find_element(By.XPATH,
                                  "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']"
                                  ).text
-        print(form)
+        # print(form)
         for key in data:
             if item := re.search(key, form, re.I):
                 re_key = item.group()
@@ -135,6 +165,7 @@ class Condocalc(webdriver.Chrome):
                 box.send_keys(data[key])
 
         self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
+
         if data['Kondygnacja'].title() == 'Parter':
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[1].click()
         if data['Kondygnacja'].title() == 'Środkowa':

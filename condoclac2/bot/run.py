@@ -19,27 +19,27 @@ data = customer_data(const.DATA_PATH)
 #         bot.wait()
 
 
-# def war():
-#     with Condocalc() as bot:
-#         bot.login_page(const.login['warta_url'])
-#         bot.login(const.login['warta_login'],
-#                   const.login['warta_password'])
-#         bot.calc_war()
-#         bot.apk_war()
-#         bot.input_war(data)
-#
-#         bot.wait()
-
-
-def wie():
+def war():
     with Condocalc() as bot:
-        bot.login_page(const.login['wiener_url'])
-        bot.login(const.login['wiener_login'],
-                  const.login['wiener_password'])
-        bot.calc_wie(const.WIE_CALC)
-        bot.input_wie(data)
+        bot.login_page(const.login['warta_url'])
+        bot.login(const.login['warta_login'],
+                  const.login['warta_password'])
+        bot.calc_war()
+        bot.apk_war()
+        bot.input_war(data)
 
         bot.wait()
+
+
+# def wie():
+#     with Condocalc() as bot:
+#         bot.login_page(const.login['wiener_url'])
+#         bot.login(const.login['wiener_login'],
+#                   const.login['wiener_password'])
+#         bot.calc_wie(const.WIE_CALC)
+#         bot.input_wie(data)
+#
+#         bot.wait()
 
 
 # calcs = [gen, war, wie]
@@ -50,4 +50,4 @@ def wie():
 
 
 
-wie()
+war()
