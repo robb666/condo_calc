@@ -161,6 +161,9 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
         time.sleep(4)
         self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr lokalu'])
+        time.sleep(.4)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").click()
+        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
 
 
         # elem = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
