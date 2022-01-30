@@ -133,9 +133,10 @@ class Condocalc(webdriver.Chrome):
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 self._clear_box(box)
                 box.send_keys(data[key])
-        time.sleep(4)
-        self.find_element(By.XPATH, "//property-data/div/div[2]/div[2]/div/div/radio-btn-in[2]/label").click()
-        # self.find_element(By.XPATH, "//input[@name='id_v21a1aryw']").click()
+
+        self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
+        self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
+
 
 
 
