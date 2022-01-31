@@ -111,11 +111,17 @@ class Condocalc(webdriver.Chrome):
         body_el.click()
         time.sleep(.2)
 
+    def _prop_year_war(self, decades):
+        action_box = ActionChains(self)
+        for _ in range(decades):
+            action_box.send_keys(Keys.ARROW_DOWN)
+        time.sleep(.2)
+        action_box.send_keys(Keys.ENTER)
+        action_box.perform()
+
+
     def input_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
-
-
-
 
         # form = WebDriverWait(self, 9).until(
         #     EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-md-12']")))
@@ -167,7 +173,6 @@ class Condocalc(webdriver.Chrome):
         if data['Rodzaj'].title() == 'Mieszkanie':
             self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
 
-
         body_el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
         self._click_into_body(body_el)
@@ -182,14 +187,34 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
         self._click_into_body(body_el)
 
-        action_box = ActionChains(self)
+
         # Przedział lat
         self.find_element(By.XPATH, '//*[@id="estate-details-construction-year-period-select-search"]').click()
+        time.sleep(.2)
+        if int(data['Rok']) > 2010:
+            self._prop_year_war(1)
+        elif int(data['Rok']) > 2000:
+            self._prop_year_war(2)
+        elif int(data['Rok']) > 1990:
+            self._prop_year_war(3)
+        elif int(data['Rok']) > 1980:
+            self._prop_year_war(4)
+        elif int(data['Rok']) > 1970:
+            self._prop_year_war(5)
+        elif int(data['Rok']) > 1960:
+            self._prop_year_war(6)
+        elif int(data['Rok']) > 1950:
+            self._prop_year_war(7)
+        elif int(data['Rok']) > 1940:
+            self._prop_year_war(8)
+        elif int(data['Rok']) > 1930:
+            self._prop_year_war(9)
+        elif int(data['Rok']) > 1920:
+            self._prop_year_war(10)
+        elif int(data['Rok']) < 1920:
+            self._prop_year_war(11)
 
-
-
-
-
+        action_box = ActionChains(self)
         # Położenie lokalu
         self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
         time.sleep(.2)
