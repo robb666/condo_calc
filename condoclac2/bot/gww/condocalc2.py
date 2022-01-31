@@ -184,44 +184,32 @@ class Condocalc(webdriver.Chrome):
         time.sleep(.2)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
         click_into_body.click()
-        time.sleep(2)
+        time.sleep(.2)
         self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr domu'])
-        time.sleep(4)
+        click_into_body.click()
+        time.sleep(.2)
         flat_no = self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']")
         self._input_by_keys(flat_no, data['Nr lokalu'])
         click_into_body.click()
-        time.sleep(2)
+        time.sleep(.2)
 
 
 
-
-        # self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)
-        area = self.find_element(By.XPATH, "//*[@id='estate-pri-area']")
-        self._input_by_keys(area, data['Powierzchnia'])
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(.2)
+        click_into_body = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
+        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
         click_into_body.click()
-        # self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
+        time.sleep(.2)
+        if data['Konstrukcja'].title() == 'drewniana':
+            self.find_elements(
+                By.XPATH, '//span[@class="replacement"]')[3].click()
 
-
-        # WebDriverWait(self, 9).until(
-        #     EC.presence_of_element_located((By.XPATH, "//*[@id='estate-pri-area']"))).send_keys(data['Powierzchnia'])
-
-
-
-
-        # elem = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
-        #
-        # pesel = ActionChains(driver)
-        # pesel.move_to_element(elem)
-        # pesel.click(elem)  # select the element where to paste text
-        # pesel.key_down(Keys.META)
-        # pesel.send_keys(pesel_regon)
-        # pesel.key_up(Keys.META)
-        # pesel.perform()
-
-
-
-
+        time.sleep(2)
+        print('click')
+        if data['Konstrukcja'].title() == 'drewniana':
+            self.find_elements(
+                By.XPATH, '//span[@class="replacement"]')[3].click()
 
 
 
