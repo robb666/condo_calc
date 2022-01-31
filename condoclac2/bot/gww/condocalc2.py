@@ -109,17 +109,13 @@ class Condocalc(webdriver.Chrome):
 
     def _click_into_body(self, body_el):
         body_el.click()
-        time.sleep(.2)
+        time.sleep(.16)
 
     def input_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
 
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        # time.sleep(5)
-        if data['Rodzaj'].title() == 'Dom':
-            self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
-        if data['Rodzaj'].title() == 'Mieszkanie':
-            self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
+
+
 
         # form = WebDriverWait(self, 9).until(
         #     EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-md-12']")))
@@ -155,7 +151,8 @@ class Condocalc(webdriver.Chrome):
         #         time.sleep(.2)
         #         action_box.perform()
 
-        body_el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
+        body_el = self.find_element(By.XPATH, '//*[@id="houseInsured"]/div[2]/house-single-insured/div[1]/span[1]')
+        self._click_into_body(body_el)
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(data['Pesel'])
         self._click_into_body(body_el)
 
@@ -164,6 +161,14 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(data['Imię'])
         self._click_into_body(body_el)
 
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        if data['Rodzaj'].title() == 'Dom':
+            self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
+        if data['Rodzaj'].title() == 'Mieszkanie':
+            self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
+
+
+        body_el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
         self._click_into_body(body_el)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
