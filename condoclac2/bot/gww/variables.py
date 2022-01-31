@@ -5,7 +5,7 @@ import re
 def customer_data(path):
     file_dict = {}
     with open(path, 'r') as file:
-        string = file.read().replace(': ', ':')
+        string = re.sub(':\s+', ':', file.read())
         clean_str = re.sub('\n+', '\n', string)
         arr = re.split('\n', clean_str)
         for item in arr:

@@ -107,20 +107,9 @@ class Condocalc(webdriver.Chrome):
 
 
 
-    def _input_by_keys(self, box, value):
-
-        action_box = ActionChains(self)
-        action_box.move_to_element(box)
-        action_box.click(box)
-        action_box.key_down(Keys.META)
-        action_box.send_keys(value)
-        action_box.key_up(Keys.META)
+    def _click_into_body(self, el):
+        el.click()
         time.sleep(.2)
-        action_box.perform()
-
-
-
-
 
     def input_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
@@ -132,10 +121,10 @@ class Condocalc(webdriver.Chrome):
         if data['Rodzaj'].title() == 'Mieszkanie':
             self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
 
-        # form = self.find_elements(By.XPATH, "//div[@class='col-md-12']")
-        form = WebDriverWait(self, 9).until(EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-md-12']")))
-        form_text = ''.join([item.text for item in form])
-        print(form_text)
+        # form = WebDriverWait(self, 9).until(
+        #     EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-md-12']")))
+        # form_text = ''.join([item.text for item in form])
+        # print(form_text)
 
         # for key in data:
         #     if item := re.search(key, form_text, re.I):
@@ -166,53 +155,42 @@ class Condocalc(webdriver.Chrome):
         #         time.sleep(.2)
         #         action_box.perform()
 
-        click_into_body = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
+        el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(data['Pesel'])
-        click_into_body.click()
-        time.sleep(.2)
+        self._click_into_body(el)
+
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(data['Nazwisko'])
-        click_into_body.click()
-
-        time.sleep(.2)
+        self._click_into_body(el)
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(data['Imię'])
-        click_into_body.click()
-        time.sleep(.2)
-
+        self._click_into_body(el)
 
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
-        click_into_body.click()
-        time.sleep(.2)
+        self._click_into_body(el)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
-        click_into_body.click()
-        time.sleep(.2)
+        self._click_into_body(el)
         self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr domu'])
-        click_into_body.click()
-        time.sleep(.2)
-        flat_no = self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']")
-        self._input_by_keys(flat_no, data['Nr lokalu'])
-        click_into_body.click()
-        time.sleep(.2)
+        self._click_into_body(el)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(data['Nr lokalu'])
+        self._click_into_body(el)
 
-
-
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(.2)
-        click_into_body = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
+        el = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
-        click_into_body.click()
-        time.sleep(.2)
-        if data['Konstrukcja'].title() == 'drewniana':
+        self._click_into_body(el)
+        if data['Konstrukcja'].title() == 'Drewniana':
             self.find_elements(
                 By.XPATH, '//span[@class="replacement"]')[3].click()
 
-        time.sleep(2)
-        print('click')
-        if data['Konstrukcja'].title() == 'drewniana':
-            self.find_elements(
-                By.XPATH, '//span[@class="replacement"]')[3].click()
+        self._click_into_body(el)
+        self.find_element(
+            By.XPATH, f"//span[contains(text(), 'Liczba szkód')]/following::input").send_keys(data['Liczba szkód'])
 
+        self._click_into_body(el)
+        self.find_element(
+            By.XPATH, f"//span[contains(text(), 'Liczba powodzi')]/following::input").send_keys('0')
 
-
+        self._click_into_body(el)
+        self.find_element(
+            By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
 
 
 
