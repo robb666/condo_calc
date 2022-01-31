@@ -181,6 +181,25 @@ class Condocalc(webdriver.Chrome):
         body_el = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
         self._click_into_body(body_el)
+
+
+
+
+        self.find_element(By.XPATH, '//*[@id="finish-standards-select-search"]').click()
+        # self._click_into_body(body_el)
+        time.sleep(2)
+        action_box = ActionChains(self)
+        action_box.send_keys(Keys.ARROW_UP)
+        action_box.send_keys(Keys.ENTER)
+        action_box.perform()
+        time.sleep(2)
+        # action_box.send_keys(Keys.ARROW_DOWN)
+        # self.find_element(By.XPATH, '//*[@id="finish-standards-select-wrapper"]/div/div[3]').click()
+
+
+
+
+        self._click_into_body(body_el)
         if data['Konstrukcja'].title() == 'Drewniana':
             self.find_elements(
                 By.XPATH, '//span[@class="replacement"]')[3].click()
