@@ -33,6 +33,7 @@ class Condocalc(webdriver.Chrome):
 
     def login(self, login, passw):
         self.find_element(By.XPATH, "//input[@id='username' or @id='login']").send_keys(login)
+        time.sleep(.1)
         self.find_element(By.XPATH, "//input[@id='password']").send_keys(passw)
         self.find_element(By.XPATH, "//*[@type='submit' or @type='button']").click()
 
@@ -106,7 +107,16 @@ class Condocalc(webdriver.Chrome):
 
 
 
+    def _input_by_keys(self, box, value):
 
+        action_box = ActionChains(self)
+        action_box.move_to_element(box)
+        action_box.click(box)
+        action_box.key_down(Keys.META)
+        action_box.send_keys(value)
+        action_box.key_up(Keys.META)
+        time.sleep(.2)
+        action_box.perform()
 
 
 
@@ -134,36 +144,69 @@ class Condocalc(webdriver.Chrome):
         #         if re_key in ('Kod TRAVEL'):
         #             continue
         #         box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
-        #         time.sleep(3)
+        #         time.sleep(.1)
         #         box.send_keys(data[key])
 
-        for key in data:
-            if item := re.search(key, form_text, re.I):
-                re_key = item.group()
-                print(re_key)
-                if re_key in ('Kod TRAVEL'):
-                    continue
-                box = WebDriverWait(self, 9).until(
-                    EC.presence_of_element_located((
-                        By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")))
+        # for key in data:
+        #     if item := re.search(key, form_text, re.I):
+        #         re_key = item.group()
+        #         print(re_key)
+        #         if re_key in ('Kod TRAVEL'):
+        #             continue
+        #         box = WebDriverWait(self, 9).until(
+        #             EC.presence_of_element_located((
+        #                 By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")))
+        #
+        #         action_box = ActionChains(self)
+        #         action_box.move_to_element(box)
+        #         action_box.click(box)
+        #         action_box.key_down(Keys.META)
+        #         action_box.send_keys(data[key])
+        #         action_box.key_up(Keys.META)
+        #         time.sleep(.2)
+        #         action_box.perform()
 
-                action_box = ActionChains(self)
-                action_box.move_to_element(box)
-                action_box.click(box)
-                action_box.key_down(Keys.META)
-                action_box.send_keys(data[key])
-                action_box.key_up(Keys.META)
-                time.sleep(2)
-                action_box.perform()
+        click_into_body = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
+        self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(data['Pesel'])
+        click_into_body.click()
+        time.sleep(.2)
+        self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(data['Nazwisko'])
+        click_into_body.click()
+
+        time.sleep(.2)
+        self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(data['Imię'])
+        click_into_body.click()
+        time.sleep(.2)
 
 
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
+        click_into_body.click()
+        time.sleep(.2)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
+        click_into_body.click()
+        time.sleep(2)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr domu'])
         time.sleep(4)
-        self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr lokalu'])
-        time.sleep(.4)
-        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").click()
-        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
+        flat_no = self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']")
+        self._input_by_keys(flat_no, data['Nr lokalu'])
+        click_into_body.click()
+        time.sleep(2)
+
+
+
+
+        # self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        area = self.find_element(By.XPATH, "//*[@id='estate-pri-area']")
+        self._input_by_keys(area, data['Powierzchnia'])
+        click_into_body.click()
+        # self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
+
+
+        # WebDriverWait(self, 9).until(
+        #     EC.presence_of_element_located((By.XPATH, "//*[@id='estate-pri-area']"))).send_keys(data['Powierzchnia'])
+
+
 
 
         # elem = WebDriverWait(self, 9).until(EC.presence_of_element_located((By.XPATH, "//div[@class='col-md-12']")))
@@ -175,6 +218,10 @@ class Condocalc(webdriver.Chrome):
         # pesel.send_keys(pesel_regon)
         # pesel.key_up(Keys.META)
         # pesel.perform()
+
+
+
+
 
 
 
