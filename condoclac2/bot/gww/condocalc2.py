@@ -212,6 +212,7 @@ class Condocalc(webdriver.Chrome):
         elif int(data['Rok']) > 1920:
             self._prop_year_war(10)
         elif int(data['Rok']) < 1920:
+            """Nieruchomość po remoncie kapitalnym ---> By.XPATH, '//span[@class="replacement"]')[3].click()"""
             self._prop_year_war(11)
 
         action_box = ActionChains(self)
