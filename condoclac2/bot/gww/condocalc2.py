@@ -109,7 +109,7 @@ class Condocalc(webdriver.Chrome):
 
     def _click_into_body(self, body_el):
         body_el.click()
-        time.sleep(.16)
+        time.sleep(.2)
 
     def input_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
@@ -182,20 +182,40 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
         self._click_into_body(body_el)
 
-
-
-
-        self.find_element(By.XPATH, '//*[@id="finish-standards-select-search"]').click()
-        # self._click_into_body(body_el)
-        time.sleep(2)
         action_box = ActionChains(self)
+        # Przedział lat
+        self.find_element(By.XPATH, '//*[@id="estate-details-construction-year-period-select-search"]').click()
+
+
+
+
+
+        # Położenie lokalu
+        self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
+        time.sleep(.2)
+        if data['Kondygnacja'].title() == 'Parter':
+            action_box.send_keys(Keys.ARROW_DOWN)
+            action_box.send_keys(Keys.ENTER)
+            action_box.perform()
+        if data['Kondygnacja'].title() == 'Środkowa':
+            action_box.send_keys(Keys.ARROW_UP)
+            action_box.send_keys(Keys.ARROW_DOWN)
+            action_box.send_keys(Keys.ENTER)
+            action_box.perform()
+        if data['Kondygnacja'].title() == 'Ostatnia':
+            action_box.send_keys(Keys.ARROW_UP)
+            action_box.send_keys(Keys.ENTER)
+            action_box.perform()
+
+
+
+        # Standard wykończenia
+        self.find_element(By.XPATH, '//*[@id="finish-standards-select-search"]').click()
+        time.sleep(.2)
         action_box.send_keys(Keys.ARROW_UP)
+        time.sleep(.2)
         action_box.send_keys(Keys.ENTER)
         action_box.perform()
-        time.sleep(2)
-        # action_box.send_keys(Keys.ARROW_DOWN)
-        # self.find_element(By.XPATH, '//*[@id="finish-standards-select-wrapper"]/div/div[3]').click()
-
 
 
 
