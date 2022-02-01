@@ -187,7 +187,6 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
         self._click_into_body(body_el)
 
-
         # Przedział lat
         self.find_element(By.XPATH, '//*[@id="estate-details-construction-year-period-select-search"]').click()
         time.sleep(.2)
@@ -212,10 +211,10 @@ class Condocalc(webdriver.Chrome):
         elif int(data['Rok']) > 1920:
             self._prop_year_war(10)
         elif int(data['Rok']) < 1920:
-            """Nieruchomość po remoncie kapitalnym ---> By.XPATH, '//span[@class="replacement"]')[3].click()"""
             self._prop_year_war(11)
 
         action_box = ActionChains(self)
+
         # Położenie lokalu
         self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
         time.sleep(.2)
@@ -233,8 +232,6 @@ class Condocalc(webdriver.Chrome):
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
 
-
-
         # Standard wykończenia
         self.find_element(By.XPATH, '//*[@id="finish-standards-select-search"]').click()
         time.sleep(.2)
@@ -247,8 +244,8 @@ class Condocalc(webdriver.Chrome):
 
         self._click_into_body(body_el)
         if data['Konstrukcja'].title() == 'Drewniana':
-            self.find_elements(
-                By.XPATH, '//span[@class="replacement"]')[3].click()
+            self.find_element(
+                By.XPATH, '//span[@dynatrace-name="house-estate-details-flammability-replacement"]').click()
 
         self._click_into_body(body_el)
         self.find_element(
@@ -262,6 +259,18 @@ class Condocalc(webdriver.Chrome):
         self.find_element(
             By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
 
+
+        # self.get_
+        try:
+            self.find_element(By.XPATH, '//*[@id="InteliwiseSaaSModule_win_wrapper"]').click()
+        except Exception as e:
+            print(e)
+
+
+        # time.sleep(5)
+        # self._click_into_body(body_el)
+
+        # self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
 
     def input_wie(self, data):
