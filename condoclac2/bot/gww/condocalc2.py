@@ -243,7 +243,7 @@ class Condocalc(webdriver.Chrome):
         self.find_element(
             By.XPATH, f"//span[contains(text(), 'Liczba powodzi')]/following::input").send_keys('0')
         self._click_into_body(body_el)
-        
+
         try:
             self.implicitly_wait(1)
             self.find_element(
