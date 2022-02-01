@@ -26,7 +26,17 @@ def war():
                   const.login['warta_password'])
         bot.calc_war()
         bot.apk_war()
-        bot.input_war(data)
+        bot.input_translate_war(data)
+        bot.input_personal_war()
+        bot.input_prop_type()
+        bot.input_address_war()
+        bot.input_construction_year_war()
+        bot.input_floor_war()
+        bot.input_area_war()
+        bot.input_finish_war()
+        bot.input_construction_type_war()
+        bot.input_declarations_war()
+        bot.input_next_war()
 
         bot.wait()
 

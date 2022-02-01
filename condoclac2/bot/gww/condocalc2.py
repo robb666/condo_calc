@@ -16,6 +16,7 @@ class Condocalc(webdriver.Chrome):
     def __init__(self, driver_path=webdriver.Chrome, teardown=False):
         self.driver_path = driver_path
         self.teardown = teardown
+        self.data_war = None
         options = webdriver.ChromeOptions()
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -103,102 +104,107 @@ class Condocalc(webdriver.Chrome):
 
         self.find_element(By.XPATH, "//span[text()='Dalej']").click()
 
-
-
-
-
-    def _click_into_body(self, body_el):
+    @staticmethod
+    def _click_into_body(body_el):
         body_el.click()
-        time.sleep(.25)
+        time.sleep(.26)
+
+    def input_translate_war(self, data):
+        data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+        self.data_war = data
+
+    def input_personal_war(self):
+        body_el = self.find_element(By.XPATH, '//*[@id="houseInsured"]/div[2]/house-single-insured/div[1]/span[1]')
+        self._click_into_body(body_el)
+        self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(self.data_war['Pesel'])
+        self._click_into_body(body_el)
+        time.sleep(.2)
+        self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(self.data_war['Nazwisko'])
+        self._click_into_body(body_el)
+        self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
+        self._click_into_body(body_el)
+
+    def input_prop_type(self):
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        if self.data_war['Rodzaj'].title() == 'Dom':
+            self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
+        if self.data_war['Rodzaj'].title() == 'Mieszkanie':
+            self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
+
+    def input_address_war(self):
+        body_el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
+        self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(self.data_war['Kod'])
+        self._click_into_body(body_el)
+        self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
+        self._click_into_body(body_el)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(self.data_war['Nr domu'])
+        self._click_into_body(body_el)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(self.data_war['Nr lokalu'])
+        self._click_into_body(body_el)
 
     def _prop_year_war(self, decades):
         action_box = ActionChains(self)
         for _ in range(decades):
             action_box.send_keys(Keys.ARROW_DOWN)
-        time.sleep(.2)
+        time.sleep(.26)
         action_box.send_keys(Keys.ENTER)
         action_box.perform()
 
-
-    def input_war(self, data):
-        data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
-
-        body_el = self.find_element(By.XPATH, '//*[@id="houseInsured"]/div[2]/house-single-insured/div[1]/span[1]')
-        self._click_into_body(body_el)
-        self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(data['Pesel'])
-        self._click_into_body(body_el)
-        time.sleep(.2)
-        self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(data['Nazwisko'])
-        self._click_into_body(body_el)
-        self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(data['Imię'])
-        self._click_into_body(body_el)
-
+    def input_construction_year_war(self):
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        if data['Rodzaj'].title() == 'Dom':
-            self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
-        if data['Rodzaj'].title() == 'Mieszkanie':
-            self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
-
-        body_el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
-        self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(data['Kod'])
-        self._click_into_body(body_el)
-        self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
-        self._click_into_body(body_el)
-        self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(data['Nr domu'])
-        self._click_into_body(body_el)
-        self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(data['Nr lokalu'])
-        self._click_into_body(body_el)
-
-        body_el = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
-        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(data['Powierzchnia'])
-        self._click_into_body(body_el)
-
-        # Przedział lat
         self.find_element(By.XPATH, '//*[@id="estate-details-construction-year-period-select-search"]').click()
-        time.sleep(.2)
-        if int(data['Rok']) > 2010:
+        time.sleep(.3)
+        if int(self.data_war['Rok']) > 2010:
             self._prop_year_war(1)
-        elif int(data['Rok']) > 2000:
+        elif int(self.data_war['Rok']) > 2000:
             self._prop_year_war(2)
-        elif int(data['Rok']) > 1990:
+        elif int(self.data_war['Rok']) > 1990:
             self._prop_year_war(3)
-        elif int(data['Rok']) > 1980:
+        elif int(self.data_war['Rok']) > 1980:
             self._prop_year_war(4)
-        elif int(data['Rok']) > 1970:
+        elif int(self.data_war['Rok']) > 1970:
             self._prop_year_war(5)
-        elif int(data['Rok']) > 1960:
+        elif int(self.data_war['Rok']) > 1960:
             self._prop_year_war(6)
-        elif int(data['Rok']) > 1950:
+        elif int(self.data_war['Rok']) > 1950:
             self._prop_year_war(7)
-        elif int(data['Rok']) > 1940:
+        elif int(self.data_war['Rok']) > 1940:
             self._prop_year_war(8)
-        elif int(data['Rok']) > 1930:
+        elif int(self.data_war['Rok']) > 1930:
             self._prop_year_war(9)
-        elif int(data['Rok']) > 1920:
+        elif int(self.data_war['Rok']) > 1920:
             self._prop_year_war(10)
-        elif int(data['Rok']) < 1920:
+        elif int(self.data_war['Rok']) < 1920:
             self._prop_year_war(11)
 
+    def input_floor_war(self):
         action_box = ActionChains(self)
 
-        # Położenie lokalu
         self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
         time.sleep(.2)
-        if data['Kondygnacja'].title() == 'Parter':
+        if self.data_war['Kondygnacja'].title() == 'Parter':
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if data['Kondygnacja'].title() == 'Środkowa':
+        if self.data_war['Kondygnacja'].title() == 'Środkowa':
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if data['Kondygnacja'].title() == 'Ostatnia':
+        if self.data_war['Kondygnacja'].title() == 'Ostatnia':
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
 
-        # Standard wykończenia
+    def input_area_war(self):
+        body_el = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
+        self._click_into_body(body_el)
+        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(self.data_war['Powierzchnia'])
+        self._click_into_body(body_el)
+
+    def input_finish_war(self):
+        action_box = ActionChains(self)
+
         self.find_element(By.XPATH, '//*[@id="finish-standards-select-search"]').click()
         time.sleep(.2)
         action_box.send_keys(Keys.ARROW_UP)
@@ -206,16 +212,21 @@ class Condocalc(webdriver.Chrome):
         action_box.send_keys(Keys.ENTER)
         action_box.perform()
 
-
-
+    def input_construction_type_war(self):
+        body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
         self._click_into_body(body_el)
-        if data['Konstrukcja'].title() == 'Drewniana':
-            self.find_element(
-                By.XPATH, '//span[@dynatrace-name="house-estate-details-flammability-replacement"]').click()
+        if self.data_war['Konstrukcja'].title() == 'Drewniana':
+            WebDriverWait(self, 9).until(
+                EC.element_to_be_clickable((
+                    By.XPATH, '//span[@dynatrace-name="house-estate-details-flammability-replacement"]'))).click()
 
+
+    def input_declarations_war(self):
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        body_el = self.find_element(By.XPATH, '//*[text()="Konfiguracja dodatkowa"]')
         self._click_into_body(body_el)
         self.find_element(
-            By.XPATH, f"//span[contains(text(), 'Liczba szkód')]/following::input").send_keys(data['Liczba szkód'])
+            By.XPATH, f"//span[contains(text(), 'Liczba szkód')]/following::input").send_keys(self.data_war['Liczba szkód'])
 
         self._click_into_body(body_el)
         self.find_element(
@@ -226,11 +237,11 @@ class Condocalc(webdriver.Chrome):
             By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
         self._click_into_body(body_el)
 
+    def input_next_war(self):
         try:
             self.find_element(By.XPATH, '//div[@class="ui-notification__inner__close"]').click()
         except Exception as e:
             print(e)
-
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
 
