@@ -1,3 +1,5 @@
+import logging
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -19,6 +21,7 @@ class Condocalc(webdriver.Chrome):
         self.teardown = teardown
         self.data_gen = None
         self.data_war = None
+        self.data_wie = None
         options = webdriver.ChromeOptions()
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -244,6 +247,8 @@ class Condocalc(webdriver.Chrome):
             By.XPATH, f"//span[contains(text(), 'Liczba powodzi')]/following::input").send_keys('0')
         self._click_into_body(body_el)
 
+    def input_popup_war(self):
+        body_el = self.find_element(By.XPATH, '//*[text()="Konfiguracja dodatkowa"]')
         try:
             self.implicitly_wait(1)
             self.find_element(
@@ -263,38 +268,53 @@ class Condocalc(webdriver.Chrome):
             self.implicitly_wait(10)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
-    def input_wie(self, data):
-        """Pierwsze linijki redefiniują słownik."""
-        # TODO dorobić kontygnację
+    def input_translate_wie(self, data):
         data['Numer budynku'], data['Numer mieszkania'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+        self.data_wie = data
+
+    def input_period_wie(self):
         time.sleep(.4)
+        time.sleep(5.4)
+        period = None
+        # try:
         period = self.find_element(By.XPATH, "//input[@ref='input']")
-        # period = WebDriverWait(self, 3).until(EC.presence_of_element_located((By.XPATH, "//input[@ref='input']"))) ???
+        # except NoSuchElementException as e:
+            # logging.WARN(e)
+            # self.find_element(By.XPATH, '//span[text()="Dowiedz się więcej >"]').click()
+            # self.find_element(By.XPATH, '//button[@class="btn tm-btnTurqEmpty au-target"]').click()
+
         period.click()
         period.send_keys(Keys.ENTER)
-        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    def input_follow_wie(self):
         self.find_element(By.XPATH, "//span[text()='Mieszkanie']").click()
-        form = self.find_element(By.XPATH,
-                                 "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']"
-                                 ).text
-        # print(form)
-        for key in data:
+        form = self.find_element(
+            By.XPATH, "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']").text
+
+        for key in self.data_wie:
             if item := re.search(key, form, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 self._clear_box(box)
-                box.send_keys(data[key])
+                box.send_keys(self.data_wie[key])
 
+    def input_property_wie(self):
         self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
-
-        if data['Kondygnacja'].title() == 'Parter':
+        time.sleep(2)
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        if self.data_wie['Kondygnacja'].title() == 'Parter':
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[1].click()
-        if data['Kondygnacja'].title() == 'Środkowa':
+        if self.data_wie['Kondygnacja'].title() == ('Środkowa', 'Środkowe'):
+            print('środkowa')
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
-        if data['Kondygnacja'].title() == 'Ostatnie':
+        if self.data_wie['Kondygnacja'].title() in ('Ostatnie', 'Ostatnia'):
             self.find_element(By.XPATH, "//property-data/*//radio-btn-in[3]/label").click()
 
+    def input_age_wie(self):
         self.find_element(By.XPATH, "//*[@id='uniqueId_4']").send_keys('30')
+
+    def input_next_wie(self):
         self.find_element(By.XPATH, "//button[text()='Następny krok']").click()
 
 
