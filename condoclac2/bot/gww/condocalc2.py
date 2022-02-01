@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import NoSuchElementException
 # from selenium.webdriver.support.relative_locator import locate_with
 import pandas as pd
 import time
@@ -132,7 +133,7 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
 
     def input_address_war(self):
-        body_el = self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]")
+        body_el = self.find_element(By.XPATH, '//*[contains(text(), "Adres miejsca ubezpieczenia")]')
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(self.data_war['Kod'])
         self._click_into_body(body_el)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
@@ -197,7 +198,7 @@ class Condocalc(webdriver.Chrome):
             action_box.perform()
 
     def input_area_war(self):
-        body_el = self.find_element(By.XPATH, '//*[@id="housePrimaryEstate"]/div[2]/div[4]')
+        body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
         self._click_into_body(body_el)
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(self.data_war['Powierzchnia'])
         self._click_into_body(body_el)
@@ -233,14 +234,18 @@ class Condocalc(webdriver.Chrome):
             By.XPATH, f"//span[contains(text(), 'Liczba powodzi')]/following::input").send_keys('0')
 
         self._click_into_body(body_el)
-        self.find_element(
-            By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
-        self._click_into_body(body_el)
+        try:
+            self.find_element(
+                By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
+            self._click_into_body(body_el)
+        except NoSuchElementException as e:
+            print(e)
+
 
     def input_next_war(self):
         try:
             self.find_element(By.XPATH, '//div[@class="ui-notification__inner__close"]').click()
-        except Exception as e:
+        except NoSuchElementException as e:
             print(e)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
