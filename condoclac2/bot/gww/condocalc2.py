@@ -109,7 +109,7 @@ class Condocalc(webdriver.Chrome):
 
     def _click_into_body(self, body_el):
         body_el.click()
-        time.sleep(.2)
+        time.sleep(.25)
 
     def _prop_year_war(self, decades):
         action_box = ActionChains(self)
@@ -123,45 +123,11 @@ class Condocalc(webdriver.Chrome):
     def input_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
 
-        # form = WebDriverWait(self, 9).until(
-        #     EC.presence_of_all_elements_located((By.XPATH, "//div[@class='col-md-12']")))
-        # form_text = ''.join([item.text for item in form])
-        # print(form_text)
-
-        # for key in data:
-        #     if item := re.search(key, form_text, re.I):
-        #         re_key = item.group()
-        #         print(re_key)
-        #         if re_key in ('Kod TRAVEL'):
-        #             continue
-        #         box = self.find_element(By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")
-        #         time.sleep(.1)
-        #         box.send_keys(data[key])
-
-        # for key in data:
-        #     if item := re.search(key, form_text, re.I):
-        #         re_key = item.group()
-        #         print(re_key)
-        #         if re_key in ('Kod TRAVEL'):
-        #             continue
-        #         box = WebDriverWait(self, 9).until(
-        #             EC.presence_of_element_located((
-        #                 By.XPATH, f"//span[contains(text(), '{re_key}')]/following::input")))
-        #
-        #         action_box = ActionChains(self)
-        #         action_box.move_to_element(box)
-        #         action_box.click(box)
-        #         action_box.key_down(Keys.META)
-        #         action_box.send_keys(data[key])
-        #         action_box.key_up(Keys.META)
-        #         time.sleep(.2)
-        #         action_box.perform()
-
         body_el = self.find_element(By.XPATH, '//*[@id="houseInsured"]/div[2]/house-single-insured/div[1]/span[1]')
         self._click_into_body(body_el)
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(data['Pesel'])
         self._click_into_body(body_el)
-
+        time.sleep(.2)
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(data['Nazwisko'])
         self._click_into_body(body_el)
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(data['Imię'])
@@ -258,19 +224,18 @@ class Condocalc(webdriver.Chrome):
         self._click_into_body(body_el)
         self.find_element(
             By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
+        self._click_into_body(body_el)
 
-
-        # self.get_
         try:
-            self.find_element(By.XPATH, '//*[@id="InteliwiseSaaSModule_win_wrapper"]').click()
+            self.find_element(By.XPATH, '//div[@class="ui-notification__inner__close"]').click()
         except Exception as e:
             print(e)
 
+        self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
-        # time.sleep(5)
-        # self._click_into_body(body_el)
 
-        # self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
+
+
 
 
     def input_wie(self, data):
