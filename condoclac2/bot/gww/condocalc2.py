@@ -17,6 +17,7 @@ class Condocalc(webdriver.Chrome):
     def __init__(self, driver_path=webdriver.Chrome, teardown=False):
         self.driver_path = driver_path
         self.teardown = teardown
+        self.data_gen = None
         self.data_war = None
         options = webdriver.ChromeOptions()
         options.add_experimental_option("useAutomationExtension", False)
@@ -24,7 +25,7 @@ class Condocalc(webdriver.Chrome):
         # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
-        self.implicitly_wait(10)
+        self.implicitly_wait(5)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -63,46 +64,55 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
     def _clear_box(self, box):
-        if box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']|"  # gen
+        if box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']|"       # gen
                                               f"//h3[text()='Miejsce ubezpieczenia']"):  # wie
             self.find_element(By.XPATH, f"//div[@id='propertyPanel']").click()
         box.send_keys(Keys.CONTROL + 'a')
         box.send_keys(Keys.DELETE)
 
-    def input_gen(self, data):
+    def input_translate_gen(self, data):
         data['domu'], data['lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+        self.data_gen = data
+
+    def input_follow_gen(self):
         form = self.find_element(By.ID, 'houseCalculationDataForm').text
-        for key in data:
+        for key in self.data_gen:
             if item := re.search(key, form, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 self._clear_box(box)
-                box.send_keys(data[key])
+                box.send_keys(self.data_gen[key])
         house = self.find_element(By.XPATH, "//input[@id='houseNumber-propertyForm']")
         self._clear_box(house)
-        house.send_keys(data['domu'])
+        house.send_keys(self.data_gen['domu'])
         flat = self.find_element(By.XPATH, "//input[@id='flatNumber-propertyForm']")
         self._clear_box(flat)
-        flat.send_keys(data['lokalu'])
+        flat.send_keys(self.data_gen['lokalu'])
 
-        if data['Rodzaj'].title() == 'Dom':
+    def input_prop_type_gen(self):
+        if self.data_gen['Rodzaj'].title() == 'Dom':
             self.find_element(By.XPATH, "//div[contains(text(), 'Dom')]").click()
-        if data['Konstrukcja'].title() == 'Drewniana':
+
+    def input_construction_type_gen(self):
+        if self.data_gen['Konstrukcja'].title() == 'Drewniana':
             self.find_element(By.XPATH, "//div[contains(text(), 'Drewniana')]").click()
-        if data['Zabezpieczenia'][0] != '':
-            self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
-            self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
-            for security in data['Zabezpieczenia']:
-                self.find_element(By.XPATH, f"//span[text()='{security.capitalize()}']").click()
 
-        data['Liczba szkód'] = 3 if int(data['Liczba szkód']) > 3 else int(data['Liczba szkód'])
+    def input_security_gen(self):
+        if self.data_gen['Zabezpieczenia'][0] != '':
+            self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
+            self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
+            for security in self.data_gen['Zabezpieczenia']:
+                self.find_element(By.XPATH, f"//option[text()='{security.capitalize()}']").click()
+
+    def input_declarations_gen(self):
+        self.data_gen['Liczba szkód'] = 3 if int(self.data_gen['Liczba szkód']) > 3 else int(self.data_gen['Liczba szkód'])
         self.find_element(By.CSS_SELECTOR,
-                          f"#last5YearsClaims > label:nth-child({int(data['Liczba szkód']) + 1})").click()
-
+                          f"#last5YearsClaims > label:nth-child({int(self.data_gen['Liczba szkód']) + 1})").click()
         for i in range(2, 7, 2):
             self.find_element(By.CSS_SELECTOR,
                               f'#agreementPanel > div:nth-child({i}) > div > div > label:nth-child(2)').click()
 
+    def input_next_gen(self):
         self.find_element(By.XPATH, "//span[text()='Dalej']").click()
 
     @staticmethod
@@ -125,7 +135,7 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
         self._click_into_body(body_el)
 
-    def input_prop_type(self):
+    def input_prop_type_war(self):
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         if self.data_war['Rodzaj'].title() == 'Dom':
             self.find_elements(By.XPATH, "//div[contains(text(), 'Dom Jednorodzinny')]")[0].click()
@@ -221,38 +231,37 @@ class Condocalc(webdriver.Chrome):
                 EC.element_to_be_clickable((
                     By.XPATH, '//span[@dynatrace-name="house-estate-details-flammability-replacement"]'))).click()
 
-
     def input_declarations_war(self):
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         body_el = self.find_element(By.XPATH, '//*[text()="Konfiguracja dodatkowa"]')
         self._click_into_body(body_el)
         self.find_element(
-            By.XPATH, f"//span[contains(text(), 'Liczba szkód')]/following::input").send_keys(self.data_war['Liczba szkód'])
+            By.XPATH, f"//span[contains(text(), 'Liczba szkód')]/following::input"
+        ).send_keys(self.data_war['Liczba szkód'])
 
         self._click_into_body(body_el)
         self.find_element(
             By.XPATH, f"//span[contains(text(), 'Liczba powodzi')]/following::input").send_keys('0')
-
         self._click_into_body(body_el)
+        
         try:
+            self.implicitly_wait(1)
             self.find_element(
-                By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji ')]/following::input").send_keys('0')
+                By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji')]/following::input"
+            ).send_keys('0')
             self._click_into_body(body_el)
         except NoSuchElementException as e:
             print(e)
-
+            self.implicitly_wait(10)
 
     def input_next_war(self):
         try:
+            self.implicitly_wait(1)
             self.find_element(By.XPATH, '//div[@class="ui-notification__inner__close"]').click()
         except NoSuchElementException as e:
             print(e)
+            self.implicitly_wait(10)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
-
-
-
-
-
 
     def input_wie(self, data):
         """Pierwsze linijki redefiniują słownik."""
