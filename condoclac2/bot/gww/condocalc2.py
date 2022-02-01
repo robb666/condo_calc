@@ -274,7 +274,7 @@ class Condocalc(webdriver.Chrome):
 
     def input_period_wie(self):
         time.sleep(.4)
-        time.sleep(5.4)
+        # time.sleep(5.4)
         period = None
         # try:
         period = self.find_element(By.XPATH, "//input[@ref='input']")
@@ -300,13 +300,10 @@ class Condocalc(webdriver.Chrome):
 
     def input_property_wie(self):
         self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
-        time.sleep(2)
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(2)
         if self.data_wie['Kondygnacja'].title() == 'Parter':
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[1].click()
-        if self.data_wie['Kondygnacja'].title() == ('Środkowa', 'Środkowe'):
-            print('środkowa')
+        if self.data_wie['Kondygnacja'].title() in ('Środkowa', 'Środkowe'):
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
         if self.data_wie['Kondygnacja'].title() in ('Ostatnie', 'Ostatnia'):
             self.find_element(By.XPATH, "//property-data/*//radio-btn-in[3]/label").click()
