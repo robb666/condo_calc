@@ -13,5 +13,5 @@ def customer_data(path):
             if colon_splitted[0] != '':
                 file_dict[colon_splitted[0]] = colon_splitted[1]
     file_dict['Zabezpieczenia'] = re.split(',\s+|,', file_dict['Zabezpieczenia'].rstrip())
-    pprint(file_dict)
+
     return file_dict

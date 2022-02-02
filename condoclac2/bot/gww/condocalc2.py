@@ -314,10 +314,6 @@ class Condocalc(webdriver.Chrome):
     def input_next_wie(self):
         self.find_element(By.XPATH, "//button[text()='Następny krok']").click()
 
-
-
-
-    def wait(self):
-        print('time.sleep(9999)')
+    @staticmethod
+    def wait():
         time.sleep(9999)
-

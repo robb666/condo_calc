@@ -4,9 +4,7 @@ from gww.condocalc2 import Condocalc
 import gww.constants as const
 from gww.variables import customer_data
 import concurrent.futures
-
-
-data = customer_data(const.DATA_PATH)
+from pprint import pprint
 
 
 def gen(data):
@@ -66,12 +64,12 @@ def wie(data):
         bot.wait()
 
 
-calcs = [gen, war, wie]
-with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-    for calc in calcs:
-        executor.submit(calc, data)
-    # time.sleep(100)
+if __name__ == '__main__':
 
+    pprint(customer_data(const.DATA_PATH))
 
-
-# war()
+    calcs = [gen, war, wie]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        for calc in calcs:
+            data = customer_data(const.DATA_PATH)
+            executor.submit(calc, data)
