@@ -22,9 +22,12 @@ class Condocalc(webdriver.Chrome):
         self.data_gen = None
         self.data_war = None
         self.data_wie = None
+        self.body_el = None
         options = webdriver.ChromeOptions()
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('prefs', {"credentials_enable_service": False,
+                                        'profile': {"profile.password_manager_enabled": False}})
         # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
@@ -128,15 +131,15 @@ class Condocalc(webdriver.Chrome):
         self.data_war = data
 
     def input_personal_war(self):
-        body_el = self.find_element(By.XPATH, '//*[@id="houseInsured"]/div[2]/house-single-insured/div[1]/span[1]')
-        self._click_into_body(body_el)
+        self.body_el = self.find_element(By.XPATH, '//*[@id="houseInsured"]/div[2]/house-single-insured/div[1]/span[1]')
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(self.data_war['Pesel'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         time.sleep(.2)
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(self.data_war['Nazwisko'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
 
     def input_prop_type_war(self):
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
@@ -146,15 +149,15 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//div[contains(text(), 'Lokal Mieszkalny')]").click()
 
     def input_address_war(self):
-        body_el = self.find_element(By.XPATH, '//*[contains(text(), "Adres miejsca ubezpieczenia")]')
+        self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Adres miejsca ubezpieczenia")]')
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(self.data_war['Kod'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(self.data_war['Nr domu'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(self.data_war['Nr lokalu'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
 
     def _prop_year_war(self, decades):
         action_box = ActionChains(self)
@@ -200,21 +203,21 @@ class Condocalc(webdriver.Chrome):
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if self.data_war['Kondygnacja'].title() == 'Środkowa':
+        if self.data_war['Kondygnacja'].title() in ('Środkowa', 'Środkowe'):
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if self.data_war['Kondygnacja'].title() == 'Ostatnia':
+        if self.data_war['Kondygnacja'].title() in ('Ostatnia', 'Ostatnie'):
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
 
     def input_area_war(self):
-        body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
-        self._click_into_body(body_el)
+        self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(self.data_war['Powierzchnia'])
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
 
     def input_finish_war(self):
         action_box = ActionChains(self)
@@ -227,8 +230,7 @@ class Condocalc(webdriver.Chrome):
         action_box.perform()
 
     def input_construction_type_war(self):
-        body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         if self.data_war['Konstrukcja'].title() == 'Drewniana':
             WebDriverWait(self, 9).until(
                 EC.element_to_be_clickable((
@@ -236,25 +238,24 @@ class Condocalc(webdriver.Chrome):
 
     def input_declarations_war(self):
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        body_el = self.find_element(By.XPATH, '//*[text()="Konfiguracja dodatkowa"]')
-        self._click_into_body(body_el)
+        self.body_el = self.find_element(By.XPATH, '//*[text()="Konfiguracja dodatkowa"]')
+        self._click_into_body(self.body_el)
         self.find_element(
             By.XPATH, f"//span[contains(text(), 'Liczba szkód')]/following::input"
         ).send_keys(self.data_war['Liczba szkód'])
 
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
         self.find_element(
             By.XPATH, f"//span[contains(text(), 'Liczba powodzi')]/following::input").send_keys('0')
-        self._click_into_body(body_el)
+        self._click_into_body(self.body_el)
 
     def input_popup_war(self):
-        body_el = self.find_element(By.XPATH, '//*[text()="Konfiguracja dodatkowa"]')
         try:
             self.implicitly_wait(1)
             self.find_element(
                 By.XPATH, f"//span[contains(text(), 'Liczba lat bezszkodowej kontynuacji')]/following::input"
             ).send_keys('0')
-            self._click_into_body(body_el)
+            self._click_into_body(self.body_el)
         except NoSuchElementException as e:
             print(e)
             self.implicitly_wait(10)
@@ -274,7 +275,6 @@ class Condocalc(webdriver.Chrome):
 
     def input_period_wie(self):
         time.sleep(.4)
-        # time.sleep(5.4)
         period = None
         # try:
         period = self.find_element(By.XPATH, "//input[@ref='input']")
@@ -295,7 +295,7 @@ class Condocalc(webdriver.Chrome):
             if item := re.search(key, form, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
-                self._clear_box(box)
+                # self._clear_box(box)
                 box.send_keys(self.data_wie[key])
 
     def input_property_wie(self):
