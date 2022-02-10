@@ -1,5 +1,4 @@
 import time
-
 from gww.condocalc2 import Condocalc
 import gww.constants as const
 from gww.variables import customer_data
@@ -73,3 +72,4 @@ if __name__ == '__main__':
         for calc in calcs:
             data = customer_data(const.DATA_PATH)
             executor.submit(calc, data)
+        time.sleep(9999)
