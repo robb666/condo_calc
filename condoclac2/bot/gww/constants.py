@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-PATH = '/run/user/1000/gvfs/smb-share:server=192.168.1.12,share=e/Agent baza/Login_Hasło.xlsx'
+PATH = 'M:\Agent baza\Login_Hasło.xlsx'
 
 
 login = {}
@@ -21,4 +21,4 @@ login['wiener_password'] = df.iloc[52, 6]
 
 WIE_CALC = 'https://wienet.pl/#/household?calculatorRoute=household'
 
-DATA_PATH = '/home/robb/Desktop/customer_form.txt'
+DATA_PATH = r'C:\Users\PipBoy3000\Desktop\formularz mieszkaniowy.txt'
