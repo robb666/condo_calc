@@ -68,13 +68,12 @@ if __name__ == '__main__':
     pprint(customer_data(const.DATA_PATH))
 
 
-    data = customer_data(const.DATA_PATH)
-    wie(data)
+    # data = customer_data(const.DATA_PATH)
+    # wie(data)
 
-    # calcs = [gen, war, wie]
-    # calcs = [war]
-    # with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-    #     for calc in calcs:
-    #         data = customer_data(const.DATA_PATH)
-    #         executor.submit(calc, data)
-        # time.sleep(9999)
+    calcs = [gen, war, wie]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        for calc in calcs:
+            data = customer_data(const.DATA_PATH)
+            executor.submit(calc, data)
+        time.sleep(9999)
