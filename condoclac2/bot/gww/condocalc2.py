@@ -11,6 +11,7 @@ from selenium.common.exceptions import NoSuchElementException
 import pandas as pd
 import time
 import re
+import inspect
 
 
 class Condocalc(webdriver.Chrome):
@@ -28,7 +29,7 @@ class Condocalc(webdriver.Chrome):
         options.add_experimental_option("excludeSwitches", ['enable-automation'])
         options.add_experimental_option('prefs', {"credentials_enable_service": False,
                                         'profile': {"profile.password_manager_enabled": False}})
-        options.add_experimental_option("detach", True)
+        # options.add_experimental_option("detach", True)
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
         self.implicitly_wait(5)
@@ -70,8 +71,12 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.ID, 'customer-needs-analysis-agentsOwnSystem-TAK').click()
 
     def _clear_box(self, box):
-        if box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']|"       # gen
-                                              f"//h3[text()='Miejsce ubezpieczenia']"):  # wie
+        current = Condocalc.input_address_war.__name__
+        call_stack = inspect.stack()
+        returned_name = call_stack[1][3]
+
+        if returned_name != current and box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']|"       # gen
+                                                                           f"//h3[text()='Miejsce ubezpieczenia']"):  # wie
             self.find_element(By.XPATH, f"//div[@id='propertyPanel']").click()
         box.send_keys(Keys.CONTROL + 'a')
         box.send_keys(Keys.DELETE)
@@ -137,7 +142,8 @@ class Condocalc(webdriver.Chrome):
         self._click_into_body(self.body_el)
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(self.data_war['Pesel'])
         self._click_into_body(self.body_el)
-        time.sleep(.2)
+        # time.sleep(5)
+        time.sleep(.5)
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(self.data_war['Nazwisko'])
         self._click_into_body(self.body_el)
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
@@ -154,10 +160,18 @@ class Condocalc(webdriver.Chrome):
         self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Adres miejsca ubezpieczenia")]')
         self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(self.data_war['Kod'])
         self._click_into_body(self.body_el)
+        self._clear_box(self.find_element(By.CSS_SELECTOR, '#estate-pri-city-search'))
+        self.find_element(By.CSS_SELECTOR, '#estate-pri-city-search').send_keys(self.data_war['Miejscowość'])
+        self._click_into_body(self.body_el)
+        self._clear_box(self.find_element(By.CSS_SELECTOR, '#estate-pri-street-search'))
+        self.find_element(By.CSS_SELECTOR, '#estate-pri-street-search').send_keys(self.data_war['Ulica'])
+        self._click_into_body(self.body_el)
         self.find_element(By.XPATH, "//*[@id='estate-address']/div/div/div[1]").click()
         self._click_into_body(self.body_el)
+        self._clear_box(self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']"))
         self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(self.data_war['Nr domu'])
         self._click_into_body(self.body_el)
+        self._clear_box(self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']"))
         self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(self.data_war['Nr lokalu'])
         self._click_into_body(self.body_el)
 
@@ -218,7 +232,9 @@ class Condocalc(webdriver.Chrome):
     def input_area_war(self):
         self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
         self._click_into_body(self.body_el)
-        self.find_element(By.XPATH, "//*[@id='estate-pri-area']").send_keys(self.data_war['Powierzchnia'])
+        m2 = self.find_element(By.XPATH, "//*[@id='estate-pri-area']")
+        time.sleep(.4)
+        m2.send_keys(self.data_war['Powierzchnia'])
         self._click_into_body(self.body_el)
 
     def input_finish_war(self):
@@ -269,7 +285,12 @@ class Condocalc(webdriver.Chrome):
         except NoSuchElementException as e:
             print(e)
             self.implicitly_wait(10)
+        # time.sleep(1)
+        self.implicitly_wait(9)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
+
+        # WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.XPATH,
+        #                                                          '//button[@id="footer-button-show-next"]'))).click()
 
     def input_translate_wie(self, data):
         data['Numer budynku'], data['Numer mieszkania'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
