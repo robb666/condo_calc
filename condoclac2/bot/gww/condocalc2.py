@@ -24,7 +24,7 @@ class Condocalc(webdriver.Chrome):
         self.body_el = None
         options = webdriver.ChromeOptions()
         options.add_experimental_option("useAutomationExtension", False)
-        options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress (order!)
+        options.add_experimental_option("excludeSwitches", ['enable-logging'])  # win devtools supress (order!)
         options.add_experimental_option("excludeSwitches", ['enable-automation'])
         options.add_experimental_option('prefs', {"credentials_enable_service": False,
                                         'profile': {"profile.password_manager_enabled": False}})
@@ -109,6 +109,8 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
             for security in self.data_gen['Zabezpieczenia']:
                 self.find_element(By.XPATH, f"//option[text()='{security.capitalize()}']").click()
+            self.body_el = self.find_element(By.XPATH, "//*[contains(text(), 'Zabezpieczenia')]")
+            self._click_into_body(self.body_el)
 
     def input_declarations_gen(self):
         self.data_gen['Liczba szkód'] = 3 if int(self.data_gen['Liczba szkód']) > 3 else int(self.data_gen['Liczba szkód'])
