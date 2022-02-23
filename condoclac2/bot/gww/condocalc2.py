@@ -1,5 +1,4 @@
 import logging
-
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -25,10 +24,11 @@ class Condocalc(webdriver.Chrome):
         self.body_el = None
         options = webdriver.ChromeOptions()
         options.add_experimental_option("useAutomationExtension", False)
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress (order!)
+        options.add_experimental_option("excludeSwitches", ['enable-automation'])
         options.add_experimental_option('prefs', {"credentials_enable_service": False,
                                         'profile': {"profile.password_manager_enabled": False}})
-        # options.add_experimental_option('excludeSwitches', ['enable-logging'])  # win devtools supress
+        options.add_experimental_option("detach", True)
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
         self.implicitly_wait(5)
