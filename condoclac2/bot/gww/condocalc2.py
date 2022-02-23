@@ -25,6 +25,7 @@ class Condocalc(webdriver.Chrome):
         self.data_wie = None
         self.body_el = None
         options = webdriver.ChromeOptions()
+        options.add_argument("--window-size=1920,1080")
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ['enable-logging'])  # win devtools supress (order!)
         options.add_experimental_option("excludeSwitches", ['enable-automation'])
@@ -32,7 +33,9 @@ class Condocalc(webdriver.Chrome):
                                         'profile': {"profile.password_manager_enabled": False}})
         # options.add_experimental_option("detach", True)
         # options.headless = True
+
         super(Condocalc, self).__init__(options=options)
+
         self.implicitly_wait(5)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -315,7 +318,8 @@ class Condocalc(webdriver.Chrome):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 # self._clear_box(box)
-                time.sleep(.3)
+                # time.sleep(.3)
+                time.sleep(.4)
                 box.send_keys(self.data_wie[key])
 
     def input_property_wie(self):
