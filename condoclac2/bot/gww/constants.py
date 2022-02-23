@@ -1,5 +1,5 @@
 import pandas as pd
-
+import os
 
 PATH = 'M:\Agent baza\Login_Hasło.xlsx'
 
@@ -21,4 +21,4 @@ login['wiener_password'] = df.iloc[52, 6]
 
 WIE_CALC = 'https://wienet.pl/#/household?calculatorRoute=household'
 
-DATA_PATH = r'C:\Users\PipBoy3000\Desktop\formularz mieszkaniowy.txt'
+DATA_PATH = os.getcwd() + r'\formularz mieszkaniowy.txt'

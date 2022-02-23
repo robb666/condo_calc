@@ -1,3 +1,4 @@
+import os
 import time
 from gww.condocalc2 import Condocalc
 import gww.constants as const
@@ -67,13 +68,13 @@ if __name__ == '__main__':
 
     pprint(customer_data(const.DATA_PATH))
 
-
     # data = customer_data(const.DATA_PATH)
     # wie(data)
 
     calcs = [gen, war, wie]
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         for calc in calcs:
+            time.sleep(.1)
             data = customer_data(const.DATA_PATH)
             executor.submit(calc, data)
         time.sleep(9999)

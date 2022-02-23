@@ -17,6 +17,7 @@ import inspect
 class Condocalc(webdriver.Chrome):
 
     def __init__(self, driver_path=webdriver.Chrome, teardown=False):
+
         self.driver_path = driver_path
         self.teardown = teardown
         self.data_gen = None
@@ -314,7 +315,7 @@ class Condocalc(webdriver.Chrome):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 # self._clear_box(box)
-                time.sleep(.2)
+                time.sleep(.3)
                 box.send_keys(self.data_wie[key])
 
     def input_property_wie(self):
