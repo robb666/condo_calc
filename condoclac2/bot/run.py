@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
 
     data = customer_data(const.DATA_PATH)
-    war(data)
+    wie(data)
 
     # calcs = [gen, war, wie]
     # calcs = [war]

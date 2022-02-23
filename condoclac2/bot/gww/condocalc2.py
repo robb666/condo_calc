@@ -142,8 +142,7 @@ class Condocalc(webdriver.Chrome):
         self._click_into_body(self.body_el)
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(self.data_war['Pesel'])
         self._click_into_body(self.body_el)
-        # time.sleep(5)
-        time.sleep(.5)
+        time.sleep(.7)
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(self.data_war['Nazwisko'])
         self._click_into_body(self.body_el)
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
@@ -285,12 +284,8 @@ class Condocalc(webdriver.Chrome):
         except NoSuchElementException as e:
             print(e)
             self.implicitly_wait(10)
-        # time.sleep(1)
-        self.implicitly_wait(9)
+        time.sleep(3.2)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
-
-        # WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.XPATH,
-        #                                                          '//button[@id="footer-button-show-next"]'))).click()
 
     def input_translate_wie(self, data):
         data['Numer budynku'], data['Numer mieszkania'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
@@ -319,6 +314,7 @@ class Condocalc(webdriver.Chrome):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 # self._clear_box(box)
+                time.sleep(.2)
                 box.send_keys(self.data_wie[key])
 
     def input_property_wie(self):
