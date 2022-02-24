@@ -86,7 +86,7 @@ class Condocalc(webdriver.Chrome):
         box.send_keys(Keys.DELETE)
 
     def input_translate_gen(self, data):
-        data['domu'], data['lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+        data['nr domu'], data['lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
         self.data_gen = data
 
     def input_follow_gen(self):
@@ -99,7 +99,7 @@ class Condocalc(webdriver.Chrome):
                 box.send_keys(self.data_gen[key])
         house = self.find_element(By.XPATH, "//input[@id='houseNumber-propertyForm']")
         self._clear_box(house)
-        house.send_keys(self.data_gen['domu'])
+        house.send_keys(self.data_gen['nr domu'])
         flat = self.find_element(By.XPATH, "//input[@id='flatNumber-propertyForm']")
         self._clear_box(flat)
         flat.send_keys(self.data_gen['lokalu'])
@@ -174,9 +174,10 @@ class Condocalc(webdriver.Chrome):
         self._clear_box(self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']"))
         self.find_element(By.XPATH, "//*[@id='estate-pri-street-no']").send_keys(self.data_war['Nr domu'])
         self._click_into_body(self.body_el)
-        self._clear_box(self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']"))
-        self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(self.data_war['Nr lokalu'])
-        self._click_into_body(self.body_el)
+        if self.data_war['Nr lokalu']:
+            self._clear_box(self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']"))
+            self.find_element(By.XPATH, "//*[@id='estate-pri-flat-no']").send_keys(self.data_war['Nr lokalu'])
+            self._click_into_body(self.body_el)
 
     def _prop_year_war(self, decades):
         action_box = ActionChains(self)
@@ -216,13 +217,14 @@ class Condocalc(webdriver.Chrome):
     def input_floor_war(self):
         action_box = ActionChains(self)
 
-        self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
+        if self.data_war['Kondygnacja']:
+            self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
         time.sleep(.2)
         if self.data_war['Kondygnacja'].title() == 'Parter':
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if self.data_war['Kondygnacja'].title() in ('Środkowa', 'Środkowe'):
+        if self.data_war['Kondygnacja'].title() in ('Pośrednia', 'Pośrednie', 'Środkowa', 'Środkowe'):
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
@@ -233,7 +235,8 @@ class Condocalc(webdriver.Chrome):
             action_box.perform()
 
     def input_area_war(self):
-        self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
+        if re.search('Mieszkanie', self.data_war['Rodzaj'], re.I):
+            self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Charakterystyka lokalu mieszkalnego")]')
         self._click_into_body(self.body_el)
         m2 = self.find_element(By.XPATH, "//*[@id='estate-pri-area']")
         time.sleep(.4)
