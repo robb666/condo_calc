@@ -33,9 +33,7 @@ class Condocalc(webdriver.Chrome):
                                         'profile': {"profile.password_manager_enabled": False}})
         # options.add_experimental_option("detach", True)
         # options.headless = True
-
         super(Condocalc, self).__init__(options=options)
-
         self.implicitly_wait(5)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -299,7 +297,7 @@ class Condocalc(webdriver.Chrome):
         self.data_wie = data
 
     def input_period_wie(self):
-        time.sleep(.4)
+        time.sleep(.5)
         period = None
         # try:
         period = self.find_element(By.XPATH, "//input[@ref='input']")
@@ -312,7 +310,11 @@ class Condocalc(webdriver.Chrome):
         period.send_keys(Keys.ENTER)
 
     def input_follow_wie(self):
-        self.find_element(By.XPATH, "//span[text()='Mieszkanie']").click()
+        if self.data_wie['Numer mieszkania']:
+            self.find_element(By.XPATH, "//span[text()='Mieszkanie']").click()
+        else:
+            self.find_element(By.XPATH, "//*[text()='Budynek mieszkalny']").click()
+
         form = self.find_element(
             By.XPATH, "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']").text
 
@@ -320,10 +322,17 @@ class Condocalc(webdriver.Chrome):
             if item := re.search(key, form, re.I):
                 re_key = item.group()
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
-                # self._clear_box(box)
-                # time.sleep(.3)
                 time.sleep(.4)
+                # time.sleep(.3)
+                self._clear_box(box)
                 box.send_keys(self.data_wie[key])
+
+        if not self.data_wie['Numer mieszkania']:
+
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[2].click()
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[3].click()
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[4].click()
 
     def input_property_wie(self):
         self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
