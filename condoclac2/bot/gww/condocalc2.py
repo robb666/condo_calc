@@ -1,4 +1,5 @@
 import logging
+import os
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -16,7 +17,8 @@ import inspect
 
 class Condocalc(webdriver.Chrome):
 
-    def __init__(self, driver_path=webdriver.Chrome, teardown=False):
+    # def __init__(self, driver_path=webdriver.Chrome, teardown=False):
+    def __init__(self, driver_path=os.getcwd() + '\chromedriver.exe', teardown=False):
 
         self.driver_path = driver_path
         self.teardown = teardown
@@ -297,7 +299,7 @@ class Condocalc(webdriver.Chrome):
         self.data_wie = data
 
     def input_period_wie(self):
-        time.sleep(.5)
+        time.sleep(.7)
         period = None
         # try:
         period = self.find_element(By.XPATH, "//input[@ref='input']")
