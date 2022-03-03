@@ -293,7 +293,7 @@ class Condocalc(webdriver.Chrome):
             self.implicitly_wait(1)
             self.find_element(By.XPATH, '//div[@class="ui-notification__inner__close"]').click()
         except NoSuchElementException as e:
-            print(e)
+            # print(e)
             self.implicitly_wait(10)
         time.sleep(3.2)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
