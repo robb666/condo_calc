@@ -27,16 +27,16 @@ class Condocalc(webdriver.Chrome):
         self.data_wie = None
         self.body_el = None
         options = webdriver.ChromeOptions()
-        options.add_argument("--window-size=1920,1080")
+        options.add_argument("--window-size=1280,1080")
         options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ['enable-logging'])  # win devtools supress (order!)
         options.add_experimental_option("excludeSwitches", ['enable-automation'])
         options.add_experimental_option('prefs', {"credentials_enable_service": False,
                                         'profile': {"profile.password_manager_enabled": False}})
-        # options.add_experimental_option("detach", True)
+        options.add_experimental_option("detach", True)
         # options.headless = True
         super(Condocalc, self).__init__(options=options)
-        self.implicitly_wait(5)
+        self.implicitly_wait(6)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self.teardown:
@@ -60,7 +60,7 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//span[text()='Mieszkaniowe']").click()
 
     def calc_wie(self, url):
-        time.sleep(.2)
+        time.sleep(.35)
         self.get(url)
 
     def apk_gen(self):
@@ -135,7 +135,7 @@ class Condocalc(webdriver.Chrome):
     @staticmethod
     def _click_into_body(body_el):
         body_el.click()
-        time.sleep(.26)
+        time.sleep(.3)
 
     def input_translate_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
@@ -147,8 +147,12 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, '//*[@id="insured-identity-0"]').send_keys(self.data_war['Pesel'])
         self._click_into_body(self.body_el)
         time.sleep(.7)
+        self.find_element(By.XPATH, '//*[@id="insured-name-0"]').clear()
+        time.sleep(.3)
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(self.data_war['Nazwisko'])
         self._click_into_body(self.body_el)
+        self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').clear()
+        time.sleep(.35)
         self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
         self._click_into_body(self.body_el)
 

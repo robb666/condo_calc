@@ -1,0 +1,2 @@
+.env\scripts\activate
+pyinstaller -F --icon=house.ico run.py
