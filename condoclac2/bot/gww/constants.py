@@ -7,6 +7,8 @@ DATA_PATH = os.getcwd() + r'\formularz mieszkaniowy.txt'
 
 JAREK_PATH = r'C:\LiH\HASŁA A.xlsx'
 
+PATH = r'M:\Agent baza\Login_Hasło.xlsx'
+
 
 login = {}
 if os.path.exists(JAREK_PATH):
@@ -28,8 +30,6 @@ if os.path.exists(JAREK_PATH):
 
 
 else:
-    PATH = r'M:\Agent baza\Login_Hasło.xlsx'
-
     df = pd.read_excel(PATH)
 
     login['generali_url'] = 'https://' + df.iloc[8, 3]
