@@ -1,2 +1,3 @@
+C:\Users\PipBoy3000\Desktop\IT\projekty\condo_calc\condoclac2\bot
 .env\scripts\activate
 pyinstaller -F --icon=house.ico run.py
