@@ -7,7 +7,7 @@ DATA_PATH = os.getcwd() + r'\formularz mieszkaniowy.txt'
 
 JAREK_PATH = r'C:\LiH\HASŁA A.xlsx'
 
-PATH = r'M:\Agent baza\Login_Hasło.xlsx'
+PATH = r'M:\Agent baza\Login_Hasło.xlsm'
 
 
 login = {}
