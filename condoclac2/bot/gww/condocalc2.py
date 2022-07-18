@@ -261,8 +261,8 @@ class Condocalc(webdriver.Chrome):
 
     def input_finish_war(self):
         action_box = ActionChains(self)
-
-        self.find_element(By.XPATH, '//*[@id="estate-pri-const-end-year"]').send_keys(self.data_war['Rok'])
+        if self.data_war['Rodzaj'] == 'Dom':
+            self.find_element(By.XPATH, '//*[@id="estate-pri-const-end-year"]').send_keys(self.data_war['Rok'])
         # time.sleep(.2)
         # action_box.send_keys(Keys.ARROW_UP)
         # time.sleep(.2)
