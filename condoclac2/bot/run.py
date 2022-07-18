@@ -69,7 +69,7 @@ if __name__ == '__main__':
     data = customer_data(const.DATA_PATH)
     pprint(data)
 
-    war(data) ####
+    wie(data) ####
     # Przez concurrent.futures mie ma traceback
 
 

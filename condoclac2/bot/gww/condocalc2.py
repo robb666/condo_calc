@@ -312,6 +312,7 @@ class Condocalc(webdriver.Chrome):
 
     def input_translate_wie(self, data):
         data['Numer budynku'], data['Numer mieszkania'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
+        # data['Kondygnacja'] =
         self.data_wie = data
 
     def input_period_wie(self):
@@ -342,6 +343,9 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//label[contains(text(), 'Rok budowy')]/following::input").send_keys(self.data_wie['Rok'])
         form.click()
         self.find_element(By.XPATH, "//label[contains(text(), 'Powierzchnia użytkowa')]/following::input").send_keys(self.data_wie['Powierzchnia'])
+        if self.data_wie.get('Kondygnacja') == 'pośrednie':
+            # self.find_element(By.XPATH, "//label[contains(text(), 'Kondygnacja')]/following::input").send_keys(self.data_wie['Nr. mieszkania'])
+            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
 
         if not self.data_wie['Numer mieszkania']:
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
