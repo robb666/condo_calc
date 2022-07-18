@@ -136,7 +136,7 @@ class Condocalc(webdriver.Chrome):
     @staticmethod
     def _click_into_body(body_el):
         body_el.click()
-        time.sleep(.3)
+        time.sleep(.8)
 
     def input_translate_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
@@ -152,9 +152,20 @@ class Condocalc(webdriver.Chrome):
         time.sleep(.3)
         self.find_element(By.XPATH, '//*[@id="insured-name-0"]').send_keys(self.data_war['Nazwisko'])
         self._click_into_body(self.body_el)
-        self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').clear()
-        time.sleep(.35)
-        self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
+
+        # WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#insured-first-name-0-search'))).clear()
+
+        self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # time.sleep(.35)
+
+        customer_name = WebDriverWait(self, 9).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, '#insured-first-name-0-search')))
+        # time.sleep(.35)
+        customer_name.send_keys(self.data_war['Imię'])
+        customer_name.send_keys(Keys.ARROW_DOWN)
+
+
+        # self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
         self._click_into_body(self.body_el)
 
     def input_prop_type_war(self):
@@ -251,12 +262,12 @@ class Condocalc(webdriver.Chrome):
     def input_finish_war(self):
         action_box = ActionChains(self)
 
-        self.find_element(By.XPATH, '//*[@id="finish-standards-select-search"]').click()
-        time.sleep(.2)
-        action_box.send_keys(Keys.ARROW_UP)
-        time.sleep(.2)
-        action_box.send_keys(Keys.ENTER)
-        action_box.perform()
+        self.find_element(By.XPATH, '//*[@id="estate-pri-const-end-year"]').send_keys(self.data_war['Rok'])
+        # time.sleep(.2)
+        # action_box.send_keys(Keys.ARROW_UP)
+        # time.sleep(.2)
+        # action_box.send_keys(Keys.ENTER)
+        # action_box.perform()
 
     def input_construction_type_war(self):
         self._click_into_body(self.body_el)
