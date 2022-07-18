@@ -79,8 +79,9 @@ class Condocalc(webdriver.Chrome):
         call_stack = inspect.stack()
         returned_name = call_stack[1][3]
 
-        if returned_name != current and box == self.find_element(By.XPATH, f"//input[@id='city-propertyForm']|"       # gen
-                                                                           f"//h3[text()='Miejsce ubezpieczenia']"):  # wie
+        if returned_name != current and box == self.find_element(By.XPATH,
+                                                                    f"//input[@id='city-propertyForm' or "       # gen
+                                                                           f"text()='Miejsce ubezpieczenia']"):  # wie
             self.find_element(By.XPATH, f"//div[@id='propertyPanel']").click()
         box.send_keys(Keys.CONTROL + 'a')
         box.send_keys(Keys.DELETE)
@@ -303,14 +304,9 @@ class Condocalc(webdriver.Chrome):
         self.data_wie = data
 
     def input_period_wie(self):
-        time.sleep(.7)
-        period = None
-        # try:
+        time.sleep(.9)
+
         period = self.find_element(By.XPATH, "//input[@ref='input']")
-        # except NoSuchElementException as e:
-            # logging.WARN(e)
-            # self.find_element(By.XPATH, '//span[text()="Dowiedz się więcej >"]').click()
-            # self.find_element(By.XPATH, '//button[@class="btn tm-btnTurqEmpty au-target"]').click()
 
         period.click()
         period.send_keys(Keys.ENTER)
@@ -322,19 +318,21 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//*[text()='Budynek mieszkalny']").click()
 
         form = self.find_element(
-            By.XPATH, "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']").text
+            By.XPATH, "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']")
+        self.find_element(By.XPATH, "//label[contains(text(), 'Kod')]/following::input").send_keys(self.data_wie['Kod'])
+        form.click()
+        self.find_element(By.XPATH, "//label[contains(text(), 'Miejscowość')]/following::input").send_keys(self.data_wie['Miejscowość'])
+        time.sleep(.1)
+        self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input").send_keys(self.data_wie['Ulica'])
+        self.find_element(By.XPATH, "//label[contains(text(), 'budynku')]/following::input").send_keys(self.data_wie['Numer budynku'])
+        if self.data_wie.get('Nr. mieszkania'):
+            self.find_element(By.XPATH, "//label[contains(text(), 'mieszkania')]/following::input").send_keys(self.data_wie['Nr. mieszkania'])
 
-        for key in self.data_wie:
-            if item := re.search(key, form, re.I):
-                re_key = item.group()
-                box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
-                time.sleep(.4)
-                # time.sleep(.3)
-                self._clear_box(box)
-                box.send_keys(self.data_wie[key])
+        self.find_element(By.XPATH, "//label[contains(text(), 'Rok budowy')]/following::input").send_keys(self.data_wie['Rok'])
+        form.click()
+        self.find_element(By.XPATH, "//label[contains(text(), 'Powierzchnia użytkowa')]/following::input").send_keys(self.data_wie['Powierzchnia'])
 
         if not self.data_wie['Numer mieszkania']:
-
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[2].click()
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[3].click()
@@ -351,11 +349,12 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//property-data/*//radio-btn-in[3]/label").click()
 
     def input_age_wie(self):
-        self.find_element(By.XPATH, "//*[@id='uniqueId_4']").send_keys('30')
+        time.sleep(.1)
+        self.find_element(By.XPATH, "//label[contains(text(), 'Wiek ubezpieczon')]/following::input").send_keys('30')
 
     def input_next_wie(self):
         self.find_element(By.XPATH, "//button[text()='Następny krok']").click()
 
-    @staticmethod
-    def wait():
-        time.sleep(9999)
+    # @staticmethod
+    # def wait():
+    #     time.sleep(9999)

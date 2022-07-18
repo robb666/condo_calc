@@ -3,7 +3,7 @@ import os
 
 WIE_CALC = 'https://wienet.pl/#/household?calculatorRoute=household'
 
-DATA_PATH = os.getcwd() + r'\formularz mieszkaniowy.txt'
+DATA_PATH = os.getcwd() + r'\gww\formularz mieszkaniowy.txt'
 
 JAREK_PATH = r'C:\LiH\HASŁA A.xlsx'
 
