@@ -343,25 +343,45 @@ class Condocalc(webdriver.Chrome):
         miejsc.send_keys(self.data_wie['Miejscowość'])
         time.sleep(.1)
 
+
+
+
         ulica = self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input")
 
 
-        pesel = ActionChains(self)
-        pesel.move_to_element(ulica)
-        pesel.click(ulica)  # select the element where to paste text
-        pesel.key_down(Keys.META)
-        pesel.send_keys(self.data_wie['Ulica'])
-        pesel.key_up(Keys.META)
-        pesel.perform()
+        action = ActionChains(self)
+        action.move_to_element(ulica)
+        action.click(ulica)  # select the element where to paste text
+        action.key_down(Keys.META)
+        action.send_keys(self.data_wie['Ulica'])
+        # action.send_keys('S')
+        action.key_up(Keys.META)
+        action.perform()
 
+
+
+        # action.send_keys(Keys.CONTROL + 'a')
+        # action.perform()
+        # time.sleep(2)
+        # action.send_keys(Keys.CONTROL + 'c')
+        # action.perform()
+        # time.sleep(2)
+        # action.send_keys(Keys.CONTROL + 'v')
+        # action.perform()
 
         # self.action.send_keys("help").perform()
 
-        time.sleep(12)
+        time.sleep(3)
         form.click()
         time.sleep(2)
+
+
+
         nr_ulicy = self.find_element(By.XPATH, "//label[contains(text(), 'budynku')]/following::input")
+        action.move_to_element(nr_ulicy)
         nr_ulicy.send_keys(self.data_wie['Nr. ulicy'] )
+
+
 
         if self.data_wie.get('Nr. mieszkania'):
             nr_mieszkania = self.find_element(By.XPATH, "//label[contains(text(), 'mieszkania')]/following::input")
