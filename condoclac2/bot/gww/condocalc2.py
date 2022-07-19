@@ -311,8 +311,6 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
     def input_translate_wie(self, data):
-        data['Numer budynku'], data['Numer mieszkania'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
-        # data['Kondygnacja'] =
         self.data_wie = data
 
     def input_period_wie(self):
@@ -324,30 +322,43 @@ class Condocalc(webdriver.Chrome):
         period.send_keys(Keys.ENTER)
 
     def input_follow_wie(self):
-        if self.data_wie['Numer mieszkania']:
+        if self.data_wie['Nr. mieszkania']:
             self.find_element(By.XPATH, "//span[text()='Mieszkanie']").click()
         else:
             self.find_element(By.XPATH, "//*[text()='Budynek mieszkalny']").click()
 
-        form = self.find_element(
-            By.XPATH, "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']")
-        self.find_element(By.XPATH, "//label[contains(text(), 'Kod')]/following::input").send_keys(self.data_wie['Kod'])
+        form = self.find_element(By.XPATH, "//div[@class='col-12 col-sm-12 col-md-12 col-lg-8 col-xl-9 intro_calculator_calculator']")
+
+        kod_poczt = self.find_element(By.XPATH, "//label[contains(text(), 'Kod')]/following::input")
+        kod_poczt.send_keys(self.data_wie['Kod'])
         form.click()
-        self.find_element(By.XPATH, "//label[contains(text(), 'Miejscowość')]/following::input").send_keys(self.data_wie['Miejscowość'])
+
+        miejsc = self.find_element(By.XPATH, "//label[contains(text(), 'Miejscowość')]/following::input")
+        miejsc.send_keys(self.data_wie['Miejscowość'])
         time.sleep(.1)
-        self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input").send_keys(self.data_wie['Ulica'])
-        self.find_element(By.XPATH, "//label[contains(text(), 'budynku')]/following::input").send_keys(self.data_wie['Numer budynku'])
+
+        ulica = self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input")
+        ulica.send_keys(self.data_wie['Ulica'])
+
+        nr_ulicy = self.find_element(By.XPATH, "//label[contains(text(), 'budynku')]/following::input")
+        nr_ulicy.send_keys(self.data_wie['Nr. ulicy'])
+
         if self.data_wie.get('Nr. mieszkania'):
-            self.find_element(By.XPATH, "//label[contains(text(), 'mieszkania')]/following::input").send_keys(self.data_wie['Nr. mieszkania'])
+            nr_mieszkania = self.find_element(By.XPATH, "//label[contains(text(), 'mieszkania')]/following::input")
+            nr_mieszkania.send_keys(self.data_wie['Nr. mieszkania'])
 
-        self.find_element(By.XPATH, "//label[contains(text(), 'Rok budowy')]/following::input").send_keys(self.data_wie['Rok'])
+        rok_budowy = self.find_element(By.XPATH, "//label[contains(text(), 'Rok budowy')]/following::input")
+        rok_budowy.send_keys(self.data_wie['Rok'])
         form.click()
-        self.find_element(By.XPATH, "//label[contains(text(), 'Powierzchnia użytkowa')]/following::input").send_keys(self.data_wie['Powierzchnia'])
-        if self.data_wie.get('Kondygnacja') == 'pośrednie':
-            # self.find_element(By.XPATH, "//label[contains(text(), 'Kondygnacja')]/following::input").send_keys(self.data_wie['Nr. mieszkania'])
-            self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
 
-        if not self.data_wie['Numer mieszkania']:
+        powierzchnia = self.find_element(By.XPATH, "//label[contains(text(), 'Powierzchnia użytkowa')]/following::input")
+        powierzchnia.send_keys(self.data_wie['Powierzchnia'])
+
+        if self.data_wie.get('Kondygnacja') == 'pośrednie':
+            poziom = self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1]
+            poziom.click()
+
+        if not self.data_wie['Nr. mieszkania']:
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[2].click()
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[3].click()
