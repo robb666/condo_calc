@@ -160,7 +160,7 @@ class Condocalc(webdriver.Chrome):
 
         customer_name = WebDriverWait(self, 9).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, '#insured-first-name-0-search')))
-        # time.sleep(.35)
+
         customer_name.send_keys(self.data_war['Imię'])
         customer_name.send_keys(Keys.ARROW_DOWN)
 
@@ -315,7 +315,13 @@ class Condocalc(webdriver.Chrome):
 
     def input_period_wie(self):
         time.sleep(.9)
+        # try:
+        #     popup = self.find_element(By.XPATH, "//label[contains(text(), 'Zamknij')]/following::input")
+        #     popup.click()
+        # except:
+        #     pass
 
+        # time.sleep(.9)
         period = self.find_element(By.XPATH, "//input[@ref='input']")
 
         period.click()
@@ -338,10 +344,24 @@ class Condocalc(webdriver.Chrome):
         time.sleep(.1)
 
         ulica = self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input")
-        ulica.send_keys(self.data_wie['Ulica'])
 
+
+        pesel = ActionChains(self)
+        pesel.move_to_element(ulica)
+        pesel.click(ulica)  # select the element where to paste text
+        pesel.key_down(Keys.META)
+        pesel.send_keys(self.data_wie['Ulica'])
+        pesel.key_up(Keys.META)
+        pesel.perform()
+
+
+        # self.action.send_keys("help").perform()
+
+        time.sleep(12)
+        form.click()
+        time.sleep(2)
         nr_ulicy = self.find_element(By.XPATH, "//label[contains(text(), 'budynku')]/following::input")
-        nr_ulicy.send_keys(self.data_wie['Nr. ulicy'])
+        nr_ulicy.send_keys(self.data_wie['Nr. ulicy'] )
 
         if self.data_wie.get('Nr. mieszkania'):
             nr_mieszkania = self.find_element(By.XPATH, "//label[contains(text(), 'mieszkania')]/following::input")
