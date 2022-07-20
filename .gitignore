@@ -1,4 +1,5 @@
 .env/
+*.txt
 condocalc/scrapy.cfg
 condocalc/condocalc/spiders/__init__.py
 condocalc/condocalc/settings.py
@@ -28,3 +29,4 @@ condoclac2/bot/build/run/warn-run.txt
 condoclac2/bot/build/run/xref-run.html
 condoclac2/bot/dist/formularz mieszkaniowy.txt
 condoclac2/bot/gww/formularz mieszkaniowy.txt
+
