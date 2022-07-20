@@ -237,20 +237,21 @@ class Condocalc(webdriver.Chrome):
 
         if self.data_war['Kondygnacja']:
             self.find_element(By.XPATH, '//*[@id="house-floors-select-search"]').click()
-        time.sleep(.2)
+        time.sleep(.4)
         if self.data_war['Kondygnacja'].title() == 'Parter':
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if self.data_war['Kondygnacja'].title() in ('Pośrednia', 'Pośrednie', 'Środkowa', 'Środkowe'):
+        elif self.data_war['Kondygnacja'].title() in ('Pośrednia', 'Pośrednie', 'Środkowa', 'Środkowe'):
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ARROW_DOWN)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
-        if self.data_war['Kondygnacja'].title() in ('Ostatnia', 'Ostatnie'):
+        elif self.data_war['Kondygnacja'].title() in ('Ostatnia', 'Ostatnie'):
             action_box.send_keys(Keys.ARROW_UP)
             action_box.send_keys(Keys.ENTER)
             action_box.perform()
+
 
     def input_area_war(self):
         if re.search('Mieszkanie', self.data_war['Rodzaj'], re.I):
@@ -309,7 +310,7 @@ class Condocalc(webdriver.Chrome):
         except NoSuchElementException as e:
             # print(e)
             self.implicitly_wait(10)
-        time.sleep(3.2)
+        time.sleep(1.2)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()
 
     def input_translate_wie(self, data):
@@ -324,8 +325,6 @@ class Condocalc(webdriver.Chrome):
         #     pass
 
         # time.sleep(.9)
-        # period = self.find_element(By.XPATH, "//input[@ref='input']")
-
         period = WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.XPATH, "//input[@ref='input']")))
 
         period.click()
