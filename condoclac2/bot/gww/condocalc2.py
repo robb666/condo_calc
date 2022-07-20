@@ -46,7 +46,9 @@ class Condocalc(webdriver.Chrome):
         self.get(url)
 
     def login(self, login, passw):
-        self.find_element(By.XPATH, "//input[@id='username' or @id='login']").send_keys(login)
+        # self.find_element(By.XPATH, "//input[@id='username' or @id='login']").send_keys(login)
+        WebDriverWait(self, 9).until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@id='username' or @id='login']"))).send_keys(login)
         time.sleep(.1)
         self.find_element(By.XPATH, "//input[@id='password']").send_keys(passw)
         self.find_element(By.XPATH, "//*[@type='submit' or @type='button']").click()
@@ -322,7 +324,9 @@ class Condocalc(webdriver.Chrome):
         #     pass
 
         # time.sleep(.9)
-        period = self.find_element(By.XPATH, "//input[@ref='input']")
+        # period = self.find_element(By.XPATH, "//input[@ref='input']")
+
+        period = WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.XPATH, "//input[@ref='input']")))
 
         period.click()
         period.send_keys(Keys.ENTER)
@@ -343,45 +347,12 @@ class Condocalc(webdriver.Chrome):
         miejsc.send_keys(self.data_wie['Miejscowość'])
         time.sleep(.1)
 
-
-
-
         ulica = self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input")
-
-
-        action = ActionChains(self)
-        action.move_to_element(ulica)
-        action.click(ulica)  # select the element where to paste text
-        action.key_down(Keys.META)
-        action.send_keys(self.data_wie['Ulica'])
-        # action.send_keys('S')
-        action.key_up(Keys.META)
-        action.perform()
-
-
-
-        # action.send_keys(Keys.CONTROL + 'a')
-        # action.perform()
-        # time.sleep(2)
-        # action.send_keys(Keys.CONTROL + 'c')
-        # action.perform()
-        # time.sleep(2)
-        # action.send_keys(Keys.CONTROL + 'v')
-        # action.perform()
-
-        # self.action.send_keys("help").perform()
-
-        time.sleep(3)
-        form.click()
-        time.sleep(2)
-
-
+        for letter in self.data_wie['Ulica']:
+            ulica.send_keys(Keys.END, letter)
 
         nr_ulicy = self.find_element(By.XPATH, "//label[contains(text(), 'budynku')]/following::input")
-        action.move_to_element(nr_ulicy)
         nr_ulicy.send_keys(self.data_wie['Nr. ulicy'] )
-
-
 
         if self.data_wie.get('Nr. mieszkania'):
             nr_mieszkania = self.find_element(By.XPATH, "//label[contains(text(), 'mieszkania')]/following::input")
