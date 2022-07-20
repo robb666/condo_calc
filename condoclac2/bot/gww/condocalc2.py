@@ -116,7 +116,7 @@ class Condocalc(webdriver.Chrome):
             self.find_element(By.XPATH, "//div[contains(text(), 'Drewniana')]").click()
 
     def input_security_gen(self):
-        if self.data_gen['Zabezpieczenia'][0] != '':
+        if self.data_gen['Zabezpieczenia'][0] not in ('', 'brak'):
             self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
             self.find_element(By.XPATH, "//input[@class='select2-search__field']").click()
             for security in self.data_gen['Zabezpieczenia']:
@@ -179,7 +179,10 @@ class Condocalc(webdriver.Chrome):
 
     def input_address_war(self):
         self.body_el = self.find_element(By.XPATH, '//*[contains(text(), "Adres miejsca ubezpieczenia")]')
-        self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code').send_keys(self.data_war['Kod'])
+        zip = self.find_element(By.CSS_SELECTOR, '#estate-pri-zip-code')
+        zip.clear()
+        time.sleep(.2)
+        zip.send_keys(self.data_war['Kod'])
         self._click_into_body(self.body_el)
         self._clear_box(self.find_element(By.CSS_SELECTOR, '#estate-pri-city-search'))
         self.find_element(By.CSS_SELECTOR, '#estate-pri-city-search').send_keys(self.data_war['Miejscowość'])
@@ -321,6 +324,7 @@ class Condocalc(webdriver.Chrome):
         # try:
         #     popup = self.find_element(By.XPATH, "//label[contains(text(), 'Zamknij')]/following::input")
         #     popup.click()
+
         # except:
         #     pass
 
@@ -341,10 +345,27 @@ class Condocalc(webdriver.Chrome):
         kod_poczt = self.find_element(By.XPATH, "//label[contains(text(), 'Kod')]/following::input")
         kod_poczt.send_keys(self.data_wie['Kod'])
         form.click()
+        # time.sleep(2)
+
+
+
 
         miejsc = self.find_element(By.XPATH, "//label[contains(text(), 'Miejscowość')]/following::input")
-        miejsc.send_keys(self.data_wie['Miejscowość'])
+        # miejsc.send_keys(self.data_wie['Nr. ulicy'] )
         time.sleep(.1)
+        miejsc.click()
+        miejsc.clear()
+
+        action = ActionChains(self)
+        action.move_to_element(miejsc)
+        action.click(miejsc)  # select the element where to paste text
+        action.key_down(Keys.META)
+        action.send_keys(self.data_wie['Miejscowość'])
+        action.key_up(Keys.META)
+        action.perform()
+
+
+
 
         ulica = self.find_element(By.XPATH, "//label[contains(text(), 'Ulica')]/following::input")
         for letter in self.data_wie['Ulica']:
@@ -391,6 +412,6 @@ class Condocalc(webdriver.Chrome):
     def input_next_wie(self):
         self.find_element(By.XPATH, "//button[text()='Następny krok']").click()
 
-    # @staticmethod
-    # def wait():
-    #     time.sleep(9999)
+    @staticmethod
+    def wait():
+        time.sleep(9999)
