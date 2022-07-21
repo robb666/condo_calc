@@ -13,7 +13,7 @@ def customer_data(path):
             for item in arr:
                 colon_splitted = item.split(':')
                 if colon_splitted[0] != '':
-                    file_dict[colon_splitted[0]] = colon_splitted[1]
+                    file_dict[colon_splitted[0]] = colon_splitted[1].rstrip()
                 else:
                     pass
 

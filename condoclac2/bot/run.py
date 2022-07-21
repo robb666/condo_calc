@@ -17,6 +17,7 @@ def gen(data):
         bot.input_translate_gen(data)
         bot.input_follow_gen()
         bot.input_prop_type_gen()
+        bot.level_gen()
         bot.input_construction_type_gen()
         bot.input_security_gen()
         bot.input_declarations_gen()
@@ -59,7 +60,7 @@ def wie(data):
         bot.input_follow_wie()
         bot.input_property_wie()
         bot.input_age_wie()
-        # bot.input_next_wie()
+        bot.input_next_wie()
 
         bot.wait()
 
@@ -69,14 +70,13 @@ if __name__ == '__main__':
     data = customer_data(const.DATA_PATH)
     pprint(data)
 
-    # wie(data) ####
+    gen(data) ####
     # Przez concurrent.futures mie ma traceback
 
 
-    calcs = [gen, war, wie]
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-        for calc in calcs:
-            time.sleep(.1)
-            data = customer_data(const.DATA_PATH)
-            executor.submit(calc, data)
-        # time.sleep(9999)
+    # calcs = [gen, war, wie]
+    # with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    #     for calc in calcs:
+    #         time.sleep(.1)
+    #         data = customer_data(const.DATA_PATH)
+    #         executor.submit(calc, data)

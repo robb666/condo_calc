@@ -103,6 +103,7 @@ class Condocalc(webdriver.Chrome):
                 self._clear_box(box)
                 box.send_keys(self.data_gen[key])
                 if key == 'Kod': time.sleep(.1)
+
         house = self.find_element(By.XPATH, "//input[@id='houseNumber-propertyForm']")
         self._clear_box(house)
         house.send_keys(self.data_gen['nr domu'])
@@ -111,11 +112,17 @@ class Condocalc(webdriver.Chrome):
         flat.send_keys(self.data_gen['lokalu'])
 
     def input_prop_type_gen(self):
-        if self.data_gen['Rodzaj'].title() == 'Dom':
+        if self.data_gen['Rodzaj'].lower() == 'dom':
             self.find_element(By.XPATH, "//div[contains(text(), 'Dom')]").click()
 
+    def level_gen(self):
+        if self.data_gen['Kondygnacja'].lower() == 'parter':
+            self.find_elements(By.XPATH, "//label[@class='btn fe-radio-btn']")[0].click()
+        if self.data_gen['Kondygnacja'].lower() in ('ostatnie', 'ostatnia'):
+            self.find_elements(By.XPATH, "//label[@class='btn fe-radio-btn']")[1].click()
+
     def input_construction_type_gen(self):
-        if self.data_gen['Konstrukcja'].title() == 'Drewniana':
+        if self.data_gen['Konstrukcja'].lower() == 'drewniana':
             self.find_element(By.XPATH, "//div[contains(text(), 'Drewniana')]").click()
 
     def input_security_gen(self):
