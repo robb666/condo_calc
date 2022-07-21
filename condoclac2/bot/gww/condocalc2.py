@@ -176,9 +176,6 @@ class Condocalc(webdriver.Chrome):
 
         customer_name.send_keys(self.data_war['Imię'])
         customer_name.send_keys(Keys.ARROW_DOWN)
-
-
-        # self.find_element(By.XPATH, '//*[@id="insured-first-name-0"]').send_keys(self.data_war['Imię'])
         self._click_into_body(self.body_el)
 
     def input_prop_type_war(self):
@@ -322,7 +319,6 @@ class Condocalc(webdriver.Chrome):
             self.implicitly_wait(1)
             self.find_element(By.XPATH, '//div[@class="ui-notification__inner__close"]').click()
         except NoSuchElementException as e:
-            # print(e)
             self.implicitly_wait(10)
         time.sleep(1.2)
         self.find_element(By.XPATH, '//button[@id="footer-button-show-next"]').click()

@@ -70,13 +70,13 @@ if __name__ == '__main__':
     data = customer_data(const.DATA_PATH)
     pprint(data)
 
-    gen(data) ####
+    # wie(data) ####
     # Przez concurrent.futures mie ma traceback
 
 
-    # calcs = [gen, war, wie]
-    # with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-    #     for calc in calcs:
-    #         time.sleep(.1)
-    #         data = customer_data(const.DATA_PATH)
-    #         executor.submit(calc, data)
+    calcs = [gen, war, wie]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        for calc in calcs:
+            time.sleep(.1)
+            data = customer_data(const.DATA_PATH)
+            executor.submit(calc, data)
