@@ -404,6 +404,8 @@ class Condocalc(webdriver.Chrome):
 
             self.find_element(By.XPATH,
                               "//label[contains(text(), 'Wiek ubezpieczon')]/following::input").send_keys(age.years)
+        self.find_element(By.XPATH,
+                          "//label[contains(text(), 'Wiek ubezpieczon')]/following::input").send_keys('40')
 
     def input_next_wie(self):
         self.find_element(By.XPATH, "//button[text()='Następny krok']").click()
