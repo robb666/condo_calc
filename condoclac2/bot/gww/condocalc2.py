@@ -13,6 +13,8 @@ import pandas as pd
 import time
 import re
 import inspect
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 
 class Condocalc(webdriver.Chrome):
@@ -139,7 +141,8 @@ class Condocalc(webdriver.Chrome):
     @staticmethod
     def _click_into_body(body_el):
         body_el.click()
-        time.sleep(.8)
+        # time.sleep(.8)
+        time.sleep(.4)
 
     def input_translate_war(self, data):
         data['Nr domu'], data['Nr lokalu'] = data.pop('Nr. ulicy'), data.pop('Nr. mieszkania')
@@ -329,8 +332,7 @@ class Condocalc(webdriver.Chrome):
         except:
             pass
 
-
-        period = WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.XPATH, "//input[@ref='input']")))
+        period = WebDriverWait(self, 1).until(EC.element_to_be_clickable((By.XPATH, "//input[@ref='input']")))
 
         period.click()
         period.send_keys(Keys.ENTER)
@@ -369,10 +371,6 @@ class Condocalc(webdriver.Chrome):
         powierzchnia = self.find_element(By.XPATH, "//label[contains(text(), 'Powierzchnia użytkowa')]/following::input")
         powierzchnia.send_keys(self.data_wie['Powierzchnia'])
 
-        if self.data_wie.get('Kondygnacja').lower() == 'pośrednie':
-            poziom = self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1]
-            poziom.click()
-
         if not self.data_wie['Nr. mieszkania']:
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[2].click()
@@ -380,18 +378,32 @@ class Condocalc(webdriver.Chrome):
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[4].click()
 
     def input_property_wie(self):
-        self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
+        self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()  # Na stałe
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        if self.data_wie['Kondygnacja'].lower() == 'Parter':
+        if self.data_wie.get('Kondygnacja').lower() == 'parter':
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[1].click()
-        if self.data_wie['Kondygnacja'].lower() in ('Środkowa', 'Środkowe'):
+        if self.data_wie.get('Kondygnacja').lower() in ('pośrednie', 'pośrednia', 'środkowa', 'środkowe'):
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
-        if self.data_wie['Kondygnacja'].lower() in ('Ostatnie', 'Ostatnia'):
+        if self.data_wie.get('Kondygnacja').lower() in ('ostatnie', 'ostatnia'):
             self.find_element(By.XPATH, "//property-data/*//radio-btn-in[3]/label").click()
 
     def input_age_wie(self):
         time.sleep(.1)
-        self.find_element(By.XPATH, "//label[contains(text(), 'Wiek ubezpieczon')]/following::input").send_keys('30')
+        if pesel := self.data_wie.get('Pesel'):
+            if pesel.startswith('0') and pesel[2] in ('2', '3'):
+                year, month, day = pesel[:2], str(int(pesel[2:4]) - 20).zfill(2), pesel[4:]
+                pesel = year + month + day
+
+            birth_date = datetime.strptime(pesel[:6], '%y%m%d').date()
+            today = datetime.today().date()
+
+            if birth_date > today and not str(birth_date).startswith('0'):
+                birth_date -= relativedelta(years=100)
+
+            age = relativedelta(today, birth_date)
+
+            self.find_element(By.XPATH,
+                              "//label[contains(text(), 'Wiek ubezpieczon')]/following::input").send_keys(age.years)
 
     def input_next_wie(self):
         self.find_element(By.XPATH, "//button[text()='Następny krok']").click()

@@ -59,7 +59,7 @@ def wie(data):
         bot.input_follow_wie()
         bot.input_property_wie()
         bot.input_age_wie()
-        bot.input_next_wie()
+        # bot.input_next_wie()
 
         bot.wait()
 
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     data = customer_data(const.DATA_PATH)
     pprint(data)
 
-    war(data) ####
+    wie(data) ####
     # Przez concurrent.futures mie ma traceback
 
 
