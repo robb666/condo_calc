@@ -353,17 +353,27 @@ class Condocalc(webdriver.Chrome):
         miejsc = self.find_element(By.XPATH, "//label[contains(text(), 'Miejscowość')]/following::input")
         # miejsc.send_keys(self.data_wie['Nr. ulicy'] )
         time.sleep(.1)
-        miejsc.click()
-        miejsc.clear()
+        # miejsc.click()
+        # miejsc.clear()
 
-        action = ActionChains(self)
-        action.move_to_element(miejsc)
-        action.click(miejsc)  # select the element where to paste text
-        action.key_down(Keys.META)
-        action.send_keys(self.data_wie['Miejscowość'])
-        action.key_up(Keys.META)
-        action.perform()
 
+        # action = ActionChains(self)
+        # action.move_to_element(miejsc)
+        # action.click(miejsc)  # select the element where to paste text
+        # action.key_down(Keys.META)
+        # action.send_keys(self.data_wie['Miejscowość'])
+        # action.key_up(Keys.META)
+        # action.click()
+        #
+        # action.perform()
+
+        # miejsc.send_keys(Keys.CONTROL, 'x')
+        # time.sleep(2)
+        # miejsc.send_keys(Keys.CONTROL, 'v')
+        # time.sleep(2)
+        # miejsc.send_keys(Keys.ENTER)
+        # self.execute_script("arguments[0].enabled = true", miejsc)
+        miejsc.send_keys(self.data_wie['Miejscowość'])
 
 
 
