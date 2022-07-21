@@ -267,7 +267,7 @@ class Condocalc(webdriver.Chrome):
 
     def input_finish_war(self):
         action_box = ActionChains(self)
-        if self.data_war['Rodzaj'] == 'Dom':
+        if self.data_war['Rodzaj'] in ('Dom', 'dom'):
             self.find_element(By.XPATH, '//*[@id="estate-pri-const-end-year"]').send_keys(self.data_war['Rok'])
         # time.sleep(.2)
         # action_box.send_keys(Keys.ARROW_UP)
@@ -321,14 +321,14 @@ class Condocalc(webdriver.Chrome):
 
     def input_period_wie(self):
         time.sleep(.9)
-        # try:
-        #     popup = self.find_element(By.XPATH, "//label[contains(text(), 'Zamknij')]/following::input")
-        #     popup.click()
+        try:
+            popup = self.find_element(By.XPATH, "//label[contains(text(), 'Zamknij')]/following::input")
+            popup.click()
+            time.sleep(.9)
+        except:
+            pass
 
-        # except:
-        #     pass
 
-        # time.sleep(.9)
         period = WebDriverWait(self, 9).until(EC.element_to_be_clickable((By.XPATH, "//input[@ref='input']")))
 
         period.click()
@@ -368,7 +368,7 @@ class Condocalc(webdriver.Chrome):
         powierzchnia = self.find_element(By.XPATH, "//label[contains(text(), 'Powierzchnia użytkowa')]/following::input")
         powierzchnia.send_keys(self.data_wie['Powierzchnia'])
 
-        if self.data_wie.get('Kondygnacja') == 'pośrednie':
+        if self.data_wie.get('Kondygnacja').lower() == 'pośrednie':
             poziom = self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1]
             poziom.click()
 
@@ -381,11 +381,11 @@ class Condocalc(webdriver.Chrome):
     def input_property_wie(self):
         self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[0].click()
         self.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        if self.data_wie['Kondygnacja'].title() == 'Parter':
+        if self.data_wie['Kondygnacja'].lower() == 'Parter':
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[1]/label")[1].click()
-        if self.data_wie['Kondygnacja'].title() in ('Środkowa', 'Środkowe'):
+        if self.data_wie['Kondygnacja'].lower() in ('Środkowa', 'Środkowe'):
             self.find_elements(By.XPATH, "//property-data/*//radio-btn-in[2]/label")[1].click()
-        if self.data_wie['Kondygnacja'].title() in ('Ostatnie', 'Ostatnia'):
+        if self.data_wie['Kondygnacja'].lower() in ('Ostatnie', 'Ostatnia'):
             self.find_element(By.XPATH, "//property-data/*//radio-btn-in[3]/label").click()
 
     def input_age_wie(self):

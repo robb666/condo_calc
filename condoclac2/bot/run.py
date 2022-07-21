@@ -61,7 +61,7 @@ def wie(data):
         bot.input_age_wie()
         bot.input_next_wie()
 
-        # bot.wait()
+        bot.wait()
 
 
 if __name__ == '__main__':
@@ -69,14 +69,14 @@ if __name__ == '__main__':
     data = customer_data(const.DATA_PATH)
     pprint(data)
 
-    war(data) ####
+    # war(data) ####
     # Przez concurrent.futures mie ma traceback
 
 
-    # calcs = [gen, war, wie]
-    # with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-    #     for calc in calcs:
-    #         time.sleep(.1)
-    #         data = customer_data(const.DATA_PATH)
-    #         executor.submit(calc, data)
-    #     time.sleep(9999)
+    calcs = [gen, war, wie]
+    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+        for calc in calcs:
+            time.sleep(.1)
+            data = customer_data(const.DATA_PATH)
+            executor.submit(calc, data)
+        # time.sleep(9999)
