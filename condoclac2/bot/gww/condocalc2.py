@@ -28,8 +28,8 @@ class Condocalc(webdriver.Chrome):
         self.body_el = None
         options = webdriver.ChromeOptions()
         options.add_argument("--window-size=1280,1080")
-        options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ['enable-logging'])  # win devtools supress (order!)
+        options.add_experimental_option("useAutomationExtension", False)
         options.add_experimental_option("excludeSwitches", ['enable-automation'])
         options.add_experimental_option('prefs', {"credentials_enable_service": False,
                                         'profile': {"profile.password_manager_enabled": False}})
@@ -100,6 +100,7 @@ class Condocalc(webdriver.Chrome):
                 box = self.find_element(By.XPATH, f"//label[contains(text(), '{re_key}')]/following::input")
                 self._clear_box(box)
                 box.send_keys(self.data_gen[key])
+                if key == 'Kod': time.sleep(.1)
         house = self.find_element(By.XPATH, "//input[@id='houseNumber-propertyForm']")
         self._clear_box(house)
         house.send_keys(self.data_gen['nr domu'])
