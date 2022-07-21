@@ -48,7 +48,6 @@ class Condocalc(webdriver.Chrome):
         self.get(url)
 
     def login(self, login, passw):
-        # self.find_element(By.XPATH, "//input[@id='username' or @id='login']").send_keys(login)
         WebDriverWait(self, 9).until(
             EC.element_to_be_clickable((By.XPATH, "//input[@id='username' or @id='login']"))).send_keys(login)
         time.sleep(.1)
