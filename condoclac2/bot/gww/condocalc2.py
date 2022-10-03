@@ -58,6 +58,8 @@ class Condocalc(webdriver.Chrome):
         self.find_element(By.XPATH, "//label[contains(text(), 'Dom')]").click()
 
     def calc_war(self):
+        self.find_element(By.XPATH, "//*[@class='modal-header__close ng-scope']").click()
+
         self.find_element(By.XPATH, "//span[text()='Majątek']").click()
         self.find_element(By.XPATH, "//a[contains(text(), 'Sprzedaż')]").click()
         self.find_element(By.XPATH, "//span[text()='Mieszkaniowe']").click()

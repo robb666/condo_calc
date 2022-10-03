@@ -73,7 +73,6 @@ if __name__ == '__main__':
     # wie(data) ####
     # Przez concurrent.futures mie ma traceback
 
-
     calcs = [gen, war, wie]
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
         for calc in calcs:
